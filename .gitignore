@@ -43,3 +43,13 @@ next-env.d.ts
 
 # prisma generated client
 /lib/generated/prisma
+
+# AI agent tooling — local dev aid only, not part of the shipped app
+/.claude
+/.agents
+/.windsurf
+/.codex
+/.cursor
+CLAUDE.md
+AGENTS.md
+skills-lock.json
