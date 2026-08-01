@@ -16,14 +16,13 @@ export default function ShippingReturnsPage() {
       <h2 className="text-xl font-semibold mt-8 mb-2">Shipping</h2>
       <div className="space-y-4">
         <p className="text-sm leading-relaxed text-muted-foreground">
-          Meridian currently ships to addresses within the United States
-          only. We use flat-rate shipping on every order rather than
-          calculating rates by carrier, so the cost at checkout is always
-          predictable.
+          Meridian currently ships to addresses within India only. We use
+          flat-rate shipping on every order rather than calculating rates by
+          carrier, so the cost at checkout is always predictable.
         </p>
         <p className="text-sm leading-relaxed text-muted-foreground">
-          Shipping is free on orders totaling $50 or more. Orders under $50
-          ship for a flat rate of $5.99, regardless of size or weight.
+          Shipping is free on orders totaling ₹4,500 or more. Orders under
+          ₹4,500 ship for a flat rate of ₹549, regardless of size or weight.
         </p>
         <p className="text-sm leading-relaxed text-muted-foreground">
           Most orders arrive within 3–7 business days of being placed. You&apos;ll

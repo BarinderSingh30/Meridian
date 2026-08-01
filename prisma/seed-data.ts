@@ -161,8 +161,8 @@ export const PRODUCTS: SeedProduct[] = [
       "Over-ear headphones built for long flights and louder offices, with adaptive active noise cancellation that adjusts to ambient sound in real time. 40-hour battery life on a single charge, plush memory-foam ear cushions, and multipoint Bluetooth 5.3 pairing so you can jump between your laptop and phone without re-pairing.",
     brand: "Aria",
     sku: "ARA-WH-100",
-    priceCents: 24900,
-    compareAtPriceCents: 29900,
+    priceCents: 2241000,
+    compareAtPriceCents: 2691000,
     stockQuantity: 84,
     categorySlug: "headphones-audio",
     images: [img("wireless-noise-cancelling-headphones"), img("wireless-noise-cancelling-headphones-2")],
@@ -174,7 +174,7 @@ export const PRODUCTS: SeedProduct[] = [
       "Compact true-wireless earbuds with a secure ear-tip fit for running and the gym. IPX5 sweat and splash resistance, 7-hour playtime per charge (28 hours with the case), and touch controls for calls, volume, and voice assistant access.",
     brand: "Aria",
     sku: "ARA-EB-200",
-    priceCents: 8900,
+    priceCents: 801000,
     stockQuantity: 156,
     categorySlug: "headphones-audio",
     images: [img("bluetooth-earbuds-pro")],
@@ -185,7 +185,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A rugged IP67 waterproof speaker that floats and survives drops from up to 1.5 meters, with 20 hours of playtime and surprisingly deep bass for its size. Pair two units together for stereo sound at a campsite or backyard party.",
     brand: "Coastal",
-    priceCents: 6900,
+    priceCents: 621000,
     stockQuantity: 112,
     categorySlug: "headphones-audio",
     images: [img("portable-bluetooth-speaker")],
@@ -197,8 +197,8 @@ export const PRODUCTS: SeedProduct[] = [
       "A 36-inch soundbar with a wireless subwoofer that adds real low-end punch to movie nights, connecting via HDMI ARC for one-remote control with most TVs. Includes dedicated dialogue enhancement mode and Bluetooth streaming from any phone or tablet.",
     brand: "Aria",
     sku: "ARA-SB-310",
-    priceCents: 17900,
-    compareAtPriceCents: 21900,
+    priceCents: 1611000,
+    compareAtPriceCents: 1971000,
     stockQuantity: 47,
     categorySlug: "headphones-audio",
     images: [img("soundbar-with-subwoofer")],
@@ -209,7 +209,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "Wired reference headphones tuned flat for accurate mixing and mastering, with 50mm drivers and a detachable coiled cable. A favorite among home-studio producers who need to hear exactly what's in the recording, not a bass-boosted version of it.",
     brand: "Aria",
-    priceCents: 14900,
+    priceCents: 1341000,
     stockQuantity: 5,
     categorySlug: "headphones-audio",
     images: [img("studio-monitor-headphones")],
@@ -223,8 +223,8 @@ export const PRODUCTS: SeedProduct[] = [
       "A 2.6-pound ultrabook with a 14-inch 1920x1200 anti-glare display, all-day 16-hour battery life, and a fanless design that stays silent during video calls. 16GB RAM and a 512GB NVMe SSD make it fast enough for everyday multitasking and light photo editing.",
     brand: "Northline",
     sku: "NL-SL14-512",
-    priceCents: 99900,
-    compareAtPriceCents: 114900,
+    priceCents: 8991000,
+    compareAtPriceCents: 10341000,
     stockQuantity: 3,
     categorySlug: "laptops-computers",
     images: [img("14-inch-ultrabook-laptop"), img("14-inch-ultrabook-laptop-2")],
@@ -236,7 +236,7 @@ export const PRODUCTS: SeedProduct[] = [
       "A pre-built gaming tower with a 12-core processor, dedicated 12GB graphics card, and 32GB of RAM, ready to run modern titles at 1440p high settings out of the box. Tempered-glass side panel and three-fan intake keep temperatures low even under sustained load.",
     brand: "Vantage",
     sku: "VG-FRG-32",
-    priceCents: 149900,
+    priceCents: 13491000,
     stockQuantity: 0,
     categorySlug: "laptops-computers",
     images: [img("gaming-desktop-tower-pc")],
@@ -247,7 +247,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A 27-inch IPS panel with true 4K resolution, 99% sRGB color accuracy, and a 60Hz refresh rate suited to design work and everyday productivity. Height-adjustable stand, USB-C input with 65W power delivery, and slim bezels for a clean dual-monitor setup.",
     brand: "Northline",
-    priceCents: 39900,
+    priceCents: 3591000,
     stockQuantity: 61,
     categorySlug: "laptops-computers",
     images: [img("27-inch-4k-monitor")],
@@ -258,7 +258,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A tenkeyless mechanical keyboard with hot-swappable tactile switches, per-key RGB lighting, and a aluminum top plate that eliminates flex. Detachable USB-C cable and dedicated media keys round out a build made for both typing and gaming.",
     brand: "Vantage",
-    priceCents: 10900,
+    priceCents: 981000,
     stockQuantity: 73,
     categorySlug: "laptops-computers",
     images: [img("mechanical-keyboard-rgb")],
@@ -269,7 +269,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A vertical-grip wireless mouse designed to keep your wrist in a natural handshake position during long work sessions. Silent clicks, a 4000 DPI optical sensor, and up to 4 months of battery life on two AA batteries.",
     brand: "Northline",
-    priceCents: 3900,
+    priceCents: 351000,
     stockQuantity: 98,
     categorySlug: "laptops-computers",
     images: [img("wireless-ergonomic-mouse")],
@@ -283,7 +283,7 @@ export const PRODUCTS: SeedProduct[] = [
       "A carrier-unlocked smartphone with a 6.5-inch OLED display, triple rear camera system with 2x optical zoom, and 128GB of storage. All-day battery backed by 33W fast charging, and IP68 water resistance for everyday peace of mind.",
     brand: "Vantage",
     sku: "VG-NV-128",
-    priceCents: 64900,
+    priceCents: 5841000,
     stockQuantity: 39,
     categorySlug: "phones-accessories",
     images: [img("unlocked-smartphone-128gb"), img("unlocked-smartphone-128gb-2")],
@@ -294,7 +294,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A slim charging pad that delivers up to 15W of fast wireless charging to Qi-compatible phones, with a soft anti-slip surface and a discreet LED indicator that dims after your phone connects. Case-friendly up to 5mm thickness.",
     brand: "Aria",
-    priceCents: 2900,
+    priceCents: 261000,
     stockQuantity: 143,
     categorySlug: "phones-accessories",
     images: [img("fast-wireless-charging-pad")],
@@ -305,7 +305,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A high-capacity power bank that can fully recharge most phones four to five times, with dual USB-C and USB-A ports for charging two devices at once. 20W USB-C power delivery gets a dead phone back to 50% in about 30 minutes.",
     brand: "Vantage",
-    priceCents: 4500,
+    priceCents: 405000,
     stockQuantity: 167,
     categorySlug: "phones-accessories",
     images: [img("20000mah-portable-power-bank")],
@@ -319,7 +319,7 @@ export const PRODUCTS: SeedProduct[] = [
       "A 24-megapixel APS-C mirrorless camera with in-body image stabilization and hybrid autofocus that tracks eyes and faces in both photo and 4K video. Weather-sealed magnesium-alloy body pairs with the included 18-55mm kit lens for travel and everyday shooting.",
     brand: "Northline",
     sku: "NL-AX1-KIT",
-    priceCents: 119900,
+    priceCents: 10791000,
     stockQuantity: 0,
     categorySlug: "cameras",
     images: [img("mirrorless-digital-camera")],
@@ -330,8 +330,8 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A palm-sized action camera that shoots stabilized 4K60 video and is waterproof to 33 feet without a housing. Voice control, a touchscreen for framing shots, and a magnetic quick-release mount make it easy to move between a helmet, handlebar, or tripod.",
     brand: "Coastal",
-    priceCents: 29900,
-    compareAtPriceCents: 34900,
+    priceCents: 2691000,
+    compareAtPriceCents: 3141000,
     stockQuantity: 54,
     categorySlug: "cameras",
     images: [img("compact-4k-action-camera")],
@@ -345,8 +345,8 @@ export const PRODUCTS: SeedProduct[] = [
       "A six-piece forged stainless-steel knife set including an 8-inch chef's knife, bread knife, and utility knife, each full-tang for balance and edge retention. Comes with a walnut storage block and a lifetime sharpening guarantee.",
     brand: "Coastal Kitchen",
     sku: "CK-KNF-6PC",
-    priceCents: 14900,
-    compareAtPriceCents: 18900,
+    priceCents: 1341000,
+    compareAtPriceCents: 1701000,
     stockQuantity: 42,
     categorySlug: "kitchen-dining",
     images: [img("stainless-steel-chef-knife-set")],
@@ -357,7 +357,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A 10-piece cookware set with a mineral-reinforced ceramic nonstick coating free of PFOA and PTFE, oven-safe to 500°F. Includes two frying pans, two saucepans, a stockpot, and tempered-glass lids that stack for compact storage.",
     brand: "Coastal Kitchen",
-    priceCents: 18900,
+    priceCents: 1701000,
     stockQuantity: 33,
     categorySlug: "kitchen-dining",
     images: [img("non-stick-ceramic-cookware-set")],
@@ -368,7 +368,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A 12-cup drip coffee maker with a 24-hour programmable timer, adjustable brew strength, and a thermal carafe that keeps coffee hot for hours without a hotplate burning it. Removable water reservoir and reusable gold-tone filter included.",
     brand: "Coastal Kitchen",
-    priceCents: 8900,
+    priceCents: 801000,
     stockQuantity: 76,
     categorySlug: "kitchen-dining",
     images: [img("programmable-drip-coffee-maker")],
@@ -380,7 +380,7 @@ export const PRODUCTS: SeedProduct[] = [
       "A 500-watt stand mixer with a tilt-head design and a 5.5-quart stainless steel bowl large enough for a double batch of cookie dough. Comes with a flat beater, dough hook, and wire whisk, plus a splash guard to keep flour off the counter.",
     brand: "Coastal Kitchen",
     sku: "CK-MIX-55",
-    priceCents: 27900,
+    priceCents: 2511000,
     stockQuantity: 28,
     categorySlug: "kitchen-dining",
     images: [img("stand-mixer-5-5-quart")],
@@ -391,7 +391,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A variable-temperature gooseneck kettle built for pour-over coffee and tea, with presets from 140°F to 212°F and a 60-minute keep-warm mode. The slim spout gives you full control over pour speed for even extraction.",
     brand: "Coastal Kitchen",
-    priceCents: 6900,
+    priceCents: 621000,
     stockQuantity: 58,
     categorySlug: "kitchen-dining",
     images: [img("electric-gooseneck-kettle")],
@@ -404,7 +404,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A mid-century inspired accent chair with a solid rubberwood frame, tapered legs, and high-density foam cushioning wrapped in stain-resistant woven fabric. Ships flat with tool-free leg assembly that takes about ten minutes.",
     brand: "Crestwood",
-    priceCents: 32900,
+    priceCents: 2961000,
     stockQuantity: 22,
     categorySlug: "furniture",
     images: [img("mid-century-modern-accent-chair")],
@@ -416,8 +416,8 @@ export const PRODUCTS: SeedProduct[] = [
       "A dual-motor electric standing desk that adjusts from 24 to 50 inches with four programmable height presets, moving smoothly and quietly under load. The 55x28-inch bamboo top comfortably fits dual monitors and a full desk setup.",
     brand: "Crestwood",
     sku: "CW-RISE-55",
-    priceCents: 44900,
-    compareAtPriceCents: 52900,
+    priceCents: 4041000,
+    compareAtPriceCents: 4761000,
     stockQuantity: 31,
     categorySlug: "furniture",
     images: [img("adjustable-height-standing-desk"), img("adjustable-height-standing-desk-2")],
@@ -428,7 +428,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A space-saving ladder-style bookshelf that leans against the wall for a modern look without wall mounting. Five open shelves in a graduated design hold everything from paperbacks to potted plants, with a weight capacity of 30 pounds per shelf.",
     brand: "Crestwood",
-    priceCents: 12900,
+    priceCents: 1161000,
     stockQuantity: 47,
     categorySlug: "furniture",
     images: [img("5-tier-ladder-bookshelf")],
@@ -439,8 +439,8 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A 10-inch queen mattress layering cooling gel memory foam over a high-density support base, designed to relieve pressure points while keeping the sleep surface cool. Compressed and shipped in a box, it expands to full size within 48 hours.",
     brand: "Crestwood",
-    priceCents: 59900,
-    compareAtPriceCents: 79900,
+    priceCents: 5391000,
+    compareAtPriceCents: 7191000,
     stockQuantity: 18,
     categorySlug: "furniture",
     images: [img("memory-foam-mattress-queen")],
@@ -453,7 +453,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A hand-woven 5x7 area rug made from 100% New Zealand wool with a low pile that's easy to vacuum and durable enough for high-traffic living rooms. Each rug carries slight variations in pattern, a natural result of the handmade process.",
     brand: "Crestwood",
-    priceCents: 21900,
+    priceCents: 1971000,
     stockQuantity: 26,
     categorySlug: "home-decor",
     images: [img("hand-woven-wool-area-rug")],
@@ -464,7 +464,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "Four hand-poured soy wax candles in cedarwood, sea salt, fig, and vanilla bean, each burning cleanly for 40-plus hours in a reusable amber glass jar. Packaged in a ribboned box that's ready to give as-is.",
     brand: "Solace",
-    priceCents: 3400,
+    priceCents: 306000,
     stockQuantity: 91,
     categorySlug: "home-decor",
     images: [img("soy-wax-candle-gift-set")],
@@ -475,7 +475,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A hand-finished ceramic table lamp in a matte glaze with a natural linen drum shade that softens light for reading nooks and bedside tables. Uses a standard E26 bulb (not included) and includes an in-line on/off switch.",
     brand: "Solace",
-    priceCents: 7900,
+    priceCents: 711000,
     stockQuantity: 39,
     categorySlug: "home-decor",
     images: [img("ceramic-table-lamp-linen-shade")],
@@ -486,7 +486,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A set of three framed botanical prints in matching black wood frames, printed on textured archival paper for a gallery-wall look straight out of the box. Pre-attached wall hooks make them level and easy to hang in minutes.",
     brand: "Solace",
-    priceCents: 5900,
+    priceCents: 531000,
     stockQuantity: 63,
     categorySlug: "home-decor",
     images: [img("framed-botanical-wall-art-set")],
@@ -499,7 +499,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A generational saga set in an aging apple orchard, following three sisters who return home after their mother's death to untangle a decades-old family secret. A slow-burn literary novel about memory, land, and what we inherit whether we want to or not.",
     brand: "Harrow & Vale Press",
-    priceCents: 1699,
+    priceCents: 152900,
     stockQuantity: 120,
     categorySlug: "fiction",
     images: [img("the-midnight-orchard")],
@@ -510,7 +510,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A coastal thriller about a marine biologist who discovers a body washed ashore during a research trip and is drawn into a town full of people determined to keep it quiet. Tense, atmospheric, and paced for a single weekend read.",
     brand: "Harrow & Vale Press",
-    priceCents: 1599,
+    priceCents: 143900,
     stockQuantity: 98,
     categorySlug: "fiction",
     images: [img("silent-tide")],
@@ -521,7 +521,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "Set in 1890s Vienna, this historical novel follows a clockmaker's daughter who inherits her father's workshop and, with it, a set of mysterious unfinished commissions that unravel a conspiracy reaching into the royal court.",
     brand: "Harrow & Vale Press",
-    priceCents: 1799,
+    priceCents: 161900,
     stockQuantity: 71,
     categorySlug: "fiction",
     images: [img("the-clockmakers-daughter")],
@@ -534,7 +534,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A practical, research-backed guide to reclaiming sustained attention in an age of constant notifications, drawing on interviews with neuroscientists and case studies of high performers. Includes a 30-day plan for rebuilding your ability to focus.",
     brand: "Harrow & Vale Press",
-    priceCents: 1899,
+    priceCents: 170900,
     stockQuantity: 84,
     categorySlug: "non-fiction",
     images: [img("deep-focus-mastering-attention")],
@@ -545,7 +545,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A plain-language introduction to index investing, retirement accounts, and building an emergency fund, written for readers who find most finance books either too technical or too preachy. No stock-picking gimmicks, just the fundamentals.",
     brand: "Harrow & Vale Press",
-    priceCents: 1699,
+    priceCents: 152900,
     stockQuantity: 66,
     categorySlug: "non-fiction",
     images: [img("the-frugal-investors-handbook")],
@@ -556,7 +556,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A photo-rich travel and food memoir documenting home cooking traditions from five continents, complete with 60 tested recipes adapted for a standard home kitchen. As much a coffee-table book as it is a cookbook.",
     brand: "Harrow & Vale Press",
-    priceCents: 2499,
+    priceCents: 224900,
     stockQuantity: 41,
     categorySlug: "non-fiction",
     images: [img("wild-kitchens-culinary-journey")],
@@ -567,7 +567,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A room-by-room framework for decluttering and organizing a home without resorting to buying more storage bins. Covers the psychology of accumulation, a two-week decluttering plan, and maintenance habits to keep spaces clear long-term.",
     brand: "Harrow & Vale Press",
-    priceCents: 1599,
+    priceCents: 143900,
     stockQuantity: 59,
     categorySlug: "non-fiction",
     images: [img("the-minimalist-home")],
@@ -580,7 +580,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A gently illustrated picture book about a girl who befriends a whale made of stars and helps guide it home across the night sky. A bedtime favorite for ages 4-8, with full-spread watercolor illustrations on every page.",
     brand: "Harrow & Vale Press",
-    priceCents: 1299,
+    priceCents: 116900,
     stockQuantity: 88,
     categorySlug: "childrens-books",
     images: [img("luna-and-the-star-whale")],
@@ -591,7 +591,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A picture book about a small repair robot who overcomes his fear of the dark factory basement to save his friends, told in simple rhyming text for early readers ages 3-6. Bright, blocky illustrations make it easy to follow along.",
     brand: "Harrow & Vale Press",
-    priceCents: 1199,
+    priceCents: 107900,
     stockQuantity: 103,
     categorySlug: "childrens-books",
     images: [img("the-brave-little-robot")],
@@ -604,7 +604,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A wrinkle-resistant cotton oxford shirt cut for a classic fit through the chest and shoulders, suitable for both the office and weekend wear. Button-down collar, single chest pocket, and a locker loop on the back yoke.",
     brand: "Pinecrest",
-    priceCents: 5400,
+    priceCents: 486000,
     stockQuantity: 134,
     categorySlug: "mens-clothing",
     images: [img("classic-fit-oxford-shirt")],
@@ -615,7 +615,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "Mid-weight denim with a touch of stretch that holds its shape through the day, cut slim through the thigh and straight from the knee down. Five-pocket styling in a versatile dark indigo wash.",
     brand: "Pinecrest",
-    priceCents: 6900,
+    priceCents: 621000,
     stockQuantity: 112,
     categorySlug: "mens-clothing",
     images: [img("slim-straight-stretch-jeans")],
@@ -626,8 +626,8 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A fine-gauge 100% merino wool sweater that's warm without bulk, naturally moisture-wicking and odor-resistant enough to wear multiple times between washes. Ribbed cuffs and hem hold their shape wash after wash.",
     brand: "Pinecrest",
-    priceCents: 8900,
-    compareAtPriceCents: 10900,
+    priceCents: 801000,
+    compareAtPriceCents: 981000,
     stockQuantity: 4,
     categorySlug: "mens-clothing",
     images: [img("merino-wool-crewneck-sweater")],
@@ -640,7 +640,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A flowing wrap dress in a soft crepe fabric that skims rather than clings, with an adjustable tie waist that flatters multiple body shapes. Midi length with three-quarter sleeves, easily dressed up or down.",
     brand: "Bloomfield",
-    priceCents: 7900,
+    priceCents: 711000,
     stockQuantity: 67,
     categorySlug: "womens-clothing",
     images: [img("wrap-midi-dress")],
@@ -651,7 +651,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "Squat-proof, high-waist leggings made from a four-way stretch fabric that moves with you through vinyasa flows or HIIT circuits. A hidden waistband pocket fits a phone or key without bouncing.",
     brand: "Bloomfield",
-    priceCents: 5400,
+    priceCents: 486000,
     stockQuantity: 145,
     categorySlug: "womens-clothing",
     images: [img("high-waist-yoga-leggings")],
@@ -662,7 +662,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A cropped denim jacket in a lightly distressed mid-wash, cut to hit right at the waist for layering over dresses or high-waist bottoms. Classic button front and chest flap pockets.",
     brand: "Bloomfield",
-    priceCents: 8900,
+    priceCents: 801000,
     stockQuantity: 52,
     categorySlug: "womens-clothing",
     images: [img("cropped-denim-jacket")],
@@ -675,7 +675,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A soft, pre-shrunk 100% cotton t-shirt with a playful screen-printed graphic that holds up wash after wash. Reinforced shoulder seams and a tagless neck label to reduce itchiness.",
     brand: "Bloomfield",
-    priceCents: 1800,
+    priceCents: 162000,
     stockQuantity: 176,
     categorySlug: "kids-clothing",
     images: [img("graphic-print-cotton-tshirt-kids")],
@@ -686,7 +686,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A brushed-fleece zip-up hoodie with a kangaroo pocket and an adjustable drawstring hood, built to handle recess, playgrounds, and everything in between. Machine washable and holds its shape after repeated washes.",
     brand: "Bloomfield",
-    priceCents: 2900,
+    priceCents: 261000,
     stockQuantity: 121,
     categorySlug: "kids-clothing",
     images: [img("fleece-zip-hoodie-kids")],
@@ -699,7 +699,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A 15% vitamin C serum formulated with ferulic acid and vitamin E to brighten dull skin and soften the look of dark spots over time. Lightweight, fast-absorbing, and layers well under moisturizer and sunscreen.",
     brand: "Solstice",
-    priceCents: 3200,
+    priceCents: 288000,
     stockQuantity: 87,
     categorySlug: "skincare",
     images: [img("vitamin-c-brightening-serum")],
@@ -710,7 +710,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "An oil-free gel moisturizer built around hyaluronic acid and squalane to hydrate without leaving a greasy finish, suited to combination and oily skin types. Absorbs in seconds and layers smoothly under makeup.",
     brand: "Solstice",
-    priceCents: 2600,
+    priceCents: 234000,
     stockQuantity: 104,
     categorySlug: "skincare",
     images: [img("hydrating-gel-moisturizer")],
@@ -721,7 +721,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A zinc-oxide mineral sunscreen with broad-spectrum SPF 50 protection that blends in clear with no white cast on most skin tones. Fragrance-free and reef-safe, formulated for daily wear under makeup.",
     brand: "Solstice",
-    priceCents: 2200,
+    priceCents: 198000,
     stockQuantity: 132,
     categorySlug: "skincare",
     images: [img("mineral-sunscreen-spf-50")],
@@ -734,7 +734,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A long-wear liquid lipstick that dries down to a comfortable matte finish without cracking or feathering into fine lines. One swipe delivers full opacity, available in a range of everyday and bold shades.",
     brand: "Solstice",
-    priceCents: 1900,
+    priceCents: 171000,
     stockQuantity: 118,
     categorySlug: "makeup",
     images: [img("matte-liquid-lipstick")],
@@ -747,7 +747,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A sulfate-free shampoo formulated with argan oil and keratin proteins to strengthen damaged, color-treated hair over repeated use. Gently cleanses without stripping color or natural oils.",
     brand: "Solstice",
-    priceCents: 1800,
+    priceCents: 162000,
     stockQuantity: 96,
     categorySlug: "hair-care",
     images: [img("argan-oil-repair-shampoo")],
@@ -758,7 +758,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A lightweight leave-in conditioner spray that smooths cuticles and cuts down on morning detangling time, especially for curly and textured hair. Doubles as a heat protectant up to 400°F before styling.",
     brand: "Solstice",
-    priceCents: 1600,
+    priceCents: 144000,
     stockQuantity: 89,
     categorySlug: "hair-care",
     images: [img("leave-in-detangling-conditioner")],
@@ -772,8 +772,8 @@ export const PRODUCTS: SeedProduct[] = [
       "A pair of adjustable dumbbells that replace up to 15 sets of traditional weights, dialing from 5 to 50 pounds per hand with a quick turn of the selector dial. Compact tray footprint fits under most beds or in a closet.",
     brand: "Trailhead",
     sku: "TH-DB-5050",
-    priceCents: 29900,
-    compareAtPriceCents: 34900,
+    priceCents: 2691000,
+    compareAtPriceCents: 3141000,
     stockQuantity: 5,
     categorySlug: "fitness-equipment",
     images: [img("adjustable-dumbbell-set")],
@@ -784,7 +784,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A 6mm thick yoga mat with a textured, moisture-resistant surface that stays grippy through hot yoga sessions. Extra cushioning protects knees and elbows on hard floors, and it rolls up with an included carry strap.",
     brand: "Trailhead",
-    priceCents: 3900,
+    priceCents: 351000,
     stockQuantity: 143,
     categorySlug: "fitness-equipment",
     images: [img("extra-thick-yoga-mat")],
@@ -795,7 +795,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A set of five fabric resistance bands ranging from light to extra-heavy tension, ideal for glute activation, mobility work, and travel workouts. Non-slip woven design won't roll or pinch skin like rubber bands.",
     brand: "Trailhead",
-    priceCents: 2200,
+    priceCents: 198000,
     stockQuantity: 168,
     categorySlug: "fitness-equipment",
     images: [img("resistance-bands-set-5-piece")],
@@ -808,7 +808,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A freestanding 2-person tent that packs down to the size of a loaf of bread and weighs just 3.2 pounds, built for three-season backpacking trips. Fully seam-sealed rainfly and two vestibules for gear storage on both sides.",
     brand: "Trailhead",
-    priceCents: 19900,
+    priceCents: 1791000,
     stockQuantity: 0,
     categorySlug: "camping-hiking",
     images: [img("2-person-backpacking-tent")],
@@ -819,7 +819,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A mummy-shaped sleeping bag rated to 0°F with synthetic insulation that retains warmth even if it gets damp, unlike down. Full-length draft tube and an insulated hood collar seal in heat on cold nights.",
     brand: "Trailhead",
-    priceCents: 12900,
+    priceCents: 1161000,
     stockQuantity: 34,
     categorySlug: "camping-hiking",
     images: [img("insulated-sleeping-bag-0f")],
@@ -830,7 +830,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A pair of carbon-fiber trekking poles that collapse to 15 inches for easy packing, with cork grips that wick away sweat on long climbs. Quick-flip locks adjust length in seconds, and interchangeable tips handle trail, snow, or pavement.",
     brand: "Trailhead",
-    priceCents: 5400,
+    priceCents: 486000,
     stockQuantity: 61,
     categorySlug: "camping-hiking",
     images: [img("trekking-poles-pair")],
@@ -843,7 +843,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A road cycling helmet with MIPS rotational-impact protection and 22 vents for airflow on long climbs. In-mold construction keeps weight under 280 grams, with a dial-adjust fit system for a secure, even fit.",
     brand: "Trailhead",
-    priceCents: 7900,
+    priceCents: 711000,
     stockQuantity: 3,
     categorySlug: "cycling",
     images: [img("road-bike-helmet-mips")],
@@ -854,7 +854,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A front-and-rear bike light set with USB-C rechargeable batteries, offering up to 10 hours of runtime on steady mode and five flash patterns for daytime visibility. Tool-free silicone mounts fit most handlebars and seat posts.",
     brand: "Trailhead",
-    priceCents: 2900,
+    priceCents: 261000,
     stockQuantity: 122,
     categorySlug: "cycling",
     images: [img("rechargeable-bike-light-set")],
@@ -867,7 +867,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A 6-inch articulated action figure with 22 points of movement and interchangeable hands for posing with included weapon and shield accessories. Part of the Galaxy Defenders collectible line, packaged in a display-ready window box.",
     brand: "Playforge",
-    priceCents: 1999,
+    priceCents: 179900,
     stockQuantity: 87,
     categorySlug: "action-figures-collectibles",
     images: [img("galaxy-defender-action-figure")],
@@ -880,7 +880,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A resource-trading strategy board game for 2-5 players where you build trade routes, negotiate with rivals, and race to establish the wealthiest kingdom. Average playtime is 60-90 minutes, with modular boards for high replayability.",
     brand: "Tablewright Games",
-    priceCents: 3900,
+    priceCents: 351000,
     stockQuantity: 2,
     categorySlug: "board-games-puzzles",
     images: [img("kingdom-traders-strategy-board-game")],
@@ -891,7 +891,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A 1000-piece jigsaw puzzle featuring a photographed mountain lake scene at sunrise, printed on thick puzzle-grade board that resists bending. Finished size is 27x20 inches, suitable for framing once completed.",
     brand: "Tablewright Games",
-    priceCents: 1899,
+    priceCents: 170900,
     stockQuantity: 74,
     categorySlug: "board-games-puzzles",
     images: [img("1000-piece-jigsaw-puzzle-mountain-lake")],
@@ -902,7 +902,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A trivia card game with 1,200 questions across six categories and three difficulty tiers, designed so kids and adults can play together on an even footing. Compact box makes it an easy pick for game night or road trips.",
     brand: "Tablewright Games",
-    priceCents: 2200,
+    priceCents: 198000,
     stockQuantity: 98,
     categorySlug: "board-games-puzzles",
     images: [img("family-trivia-card-game")],
@@ -915,7 +915,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A 500-piece interlocking brick set for building a five-building city skyline, compatible with most major building-brick brands. Includes an illustrated step-by-step booklet and a reusable storage tub for sorting pieces.",
     brand: "BrickWorks",
-    priceCents: 4900,
+    priceCents: 441000,
     stockQuantity: 63,
     categorySlug: "building-sets",
     images: [img("500-piece-construction-brick-set")],
@@ -926,7 +926,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A 60-piece set of translucent magnetic building tiles in squares, triangles, and windows, letting kids build towers, castles, and cars that snap together instantly. Tiles are compatible with most other magnetic building brands on the market.",
     brand: "BrickWorks",
-    priceCents: 4400,
+    priceCents: 396000,
     stockQuantity: 77,
     categorySlug: "building-sets",
     images: [img("magnetic-tile-building-set-60pc")],
@@ -939,7 +939,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A 12-can variety pack of unsweetened sparkling water in four fruit-forward flavors, with zero calories, zero sugar, and no artificial sweeteners. Brewed with real fruit essence and finely carbonated for a crisp finish.",
     brand: "Meadowfresh",
-    priceCents: 899,
+    priceCents: 80900,
     stockQuantity: 214,
     categorySlug: "snacks-beverages",
     images: [img("sparkling-water-variety-pack-12can")],
@@ -950,7 +950,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "Individually wrapped 70% dark chocolate bars studded with roasted almonds and a touch of sea salt, made with fair-trade certified cocoa. A box of 12 makes for easy grab-and-go snacking or lunchbox additions.",
     brand: "Meadowfresh",
-    priceCents: 1299,
+    priceCents: 116900,
     stockQuantity: 156,
     categorySlug: "snacks-beverages",
     images: [img("dark-chocolate-almond-bars-12ct")],
@@ -961,7 +961,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "Thick-cut potato chips kettle-cooked in small batches for extra crunch, seasoned simply with sea salt and nothing else. Non-GMO potatoes, cooked in avocado oil for a cleaner ingredient list.",
     brand: "Meadowfresh",
-    priceCents: 449,
+    priceCents: 40400,
     stockQuantity: 189,
     categorySlug: "snacks-beverages",
     images: [img("kettle-cooked-sea-salt-chips")],
@@ -974,7 +974,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A cold-pressed, organic extra virgin olive oil with a peppery finish, bottled from a single harvest for consistent flavor. Packaged in a dark glass bottle to protect against light degradation, ideal for finishing dishes or everyday cooking.",
     brand: "Meadowfresh",
-    priceCents: 1699,
+    priceCents: 152900,
     stockQuantity: 92,
     categorySlug: "pantry-staples",
     images: [img("organic-extra-virgin-olive-oil-500ml")],
@@ -987,7 +987,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "Light-roast whole bean coffee sourced from a single farm cooperative in the Yirgacheffe region, with tasting notes of blueberry, bergamot, and brown sugar. Roasted in small batches weekly and shipped within days of roasting for peak freshness.",
     brand: "Meadowfresh",
-    priceCents: 1599,
+    priceCents: 143900,
     stockQuantity: 104,
     categorySlug: "coffee-tea",
     images: [img("single-origin-ethiopian-coffee-beans")],
@@ -998,7 +998,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A 100-count box of organic green tea in individually wrapped bags for freshness, sourced from high-elevation gardens for a smooth, grassy flavor without bitterness. Naturally low in caffeine compared to black tea or coffee.",
     brand: "Meadowfresh",
-    priceCents: 999,
+    priceCents: 89900,
     stockQuantity: 138,
     categorySlug: "coffee-tea",
     images: [img("organic-green-tea-bags-100ct")],
@@ -1011,7 +1011,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A 240-page dot grid notebook with a numbered table of contents, an elastic closure band, and a ribbon bookmark, sized for bullet journaling or daily planning. Thick 120gsm paper resists bleed-through from most fountain and gel pens.",
     brand: "Fieldnote",
-    priceCents: 1499,
+    priceCents: 134900,
     stockQuantity: 167,
     categorySlug: "notebooks-paper",
     images: [img("dot-grid-bullet-journal")],
@@ -1022,7 +1022,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A 12-pad pack of 3x3 sticky notes made from 100% recycled paper with a strong-hold adhesive that stays put on monitors, notebooks, and desks. Available in a mix of pastel colors for easy color-coding.",
     brand: "Fieldnote",
-    priceCents: 799,
+    priceCents: 71900,
     stockQuantity: 203,
     categorySlug: "notebooks-paper",
     images: [img("recycled-sticky-notes-pack")],
@@ -1035,7 +1035,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A solid bamboo monitor stand that raises your screen 4 inches to a more ergonomic eye level, with an open shelf underneath for a keyboard or notebooks. Rated to hold monitors up to 44 pounds.",
     brand: "Fieldnote",
-    priceCents: 3400,
+    priceCents: 306000,
     stockQuantity: 78,
     categorySlug: "desk-accessories",
     images: [img("bamboo-monitor-stand")],
@@ -1046,7 +1046,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A flicker-free LED desk lamp with five brightness levels and three color temperatures, controlled through a touch-sensitive base with memory of your last setting. A built-in USB-A port lets you charge a phone without an extra outlet.",
     brand: "Fieldnote",
-    priceCents: 3900,
+    priceCents: 351000,
     stockQuantity: 91,
     categorySlug: "desk-accessories",
     images: [img("adjustable-led-desk-lamp")],
@@ -1059,7 +1059,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A set of 12 gel pens in vibrant, richly pigmented colors with a smooth 0.7mm tip that glides without skipping. Comfort grip barrels reduce hand fatigue during long journaling or planning sessions.",
     brand: "Fieldnote",
-    priceCents: 1199,
+    priceCents: 107900,
     stockQuantity: 146,
     categorySlug: "writing-instruments",
     images: [img("12-color-gel-pen-set")],
@@ -1072,8 +1072,8 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A large orthopedic dog bed with a 4-inch memory foam base that supports joints and hips, especially helpful for senior dogs or larger breeds. The removable cover unzips for machine washing, and a waterproof liner protects the foam from accidents.",
     brand: "Pawline",
-    priceCents: 6900,
-    compareAtPriceCents: 8400,
+    priceCents: 621000,
+    compareAtPriceCents: 756000,
     stockQuantity: 44,
     categorySlug: "dog-supplies",
     images: [img("orthopedic-memory-foam-dog-bed")],
@@ -1084,7 +1084,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A tightly braided cotton rope toy built for tug-of-war and solo chewing, with fibers that help clean teeth and massage gums as your dog plays. Machine washable and free of dyes or artificial additives.",
     brand: "Pawline",
-    priceCents: 1200,
+    priceCents: 108000,
     stockQuantity: 187,
     categorySlug: "dog-supplies",
     images: [img("durable-rope-chew-toy")],
@@ -1098,7 +1098,7 @@ export const PRODUCTS: SeedProduct[] = [
       "An automatic litter box that rakes waste into a sealed compartment within minutes of your cat leaving, cutting down on odor and daily scooping. Quiet motor operation and a safety sensor pause cleaning cycles whenever a cat is inside.",
     brand: "Pawline",
     sku: "PL-LB-AUTO",
-    priceCents: 15900,
+    priceCents: 1431000,
     stockQuantity: 0,
     categorySlug: "cat-supplies",
     images: [img("self-cleaning-litter-box")],
@@ -1109,7 +1109,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A telescoping wand toy with a feather-and-bell attachment that taps into a cat's natural prey drive for active, engaging play sessions. Extends to 3 feet for interactive play and collapses to 14 inches for easy storage.",
     brand: "Pawline",
-    priceCents: 999,
+    priceCents: 89900,
     stockQuantity: 164,
     categorySlug: "cat-supplies",
     images: [img("interactive-feather-wand-cat-toy")],
@@ -1122,7 +1122,7 @@ export const PRODUCTS: SeedProduct[] = [
     description:
       "A complete 10-gallon aquarium starter kit including a quiet filtration system, LED hood light, and a heater rated for tropical fish, everything needed to set up a first freshwater tank. Includes a water conditioner sample and setup guide.",
     brand: "Pawline",
-    priceCents: 8900,
+    priceCents: 801000,
     stockQuantity: 37,
     categorySlug: "small-pet-aquarium",
     images: [img("10-gallon-aquarium-starter-kit")],

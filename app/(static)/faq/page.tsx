@@ -49,9 +49,9 @@ export default function FaqPage() {
         <div className="space-y-1">
           <h3 className="font-medium">What payment methods do you accept?</h3>
           <p className="text-sm text-muted-foreground">
-            We accept all major credit and debit cards, including Visa,
-            Mastercard, American Express, and Discover, processed securely at
-            checkout.
+            We accept all major credit and debit cards (Visa, Mastercard,
+            RuPay, and American Express), as well as UPI and net banking,
+            processed securely at checkout.
           </p>
         </div>
 
@@ -59,8 +59,8 @@ export default function FaqPage() {
           <h3 className="font-medium">How long does shipping take, and what does it cost?</h3>
           <p className="text-sm text-muted-foreground">
             Orders typically arrive within 3–7 business days. Shipping is
-            free on orders over $50; otherwise a flat rate of $5.99 applies.
-            We currently ship within the United States only.
+            free on orders over ₹4,500; otherwise a flat rate of ₹549 applies.
+            We currently ship within India only.
           </p>
         </div>
 

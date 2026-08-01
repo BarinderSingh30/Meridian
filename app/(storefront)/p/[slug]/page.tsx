@@ -50,7 +50,7 @@ export default async function ProductPage({ params }: { params: Params }) {
     brand: product.brand ? { "@type": "Brand", name: product.brand } : undefined,
     offers: {
       "@type": "Offer",
-      priceCurrency: "USD",
+      priceCurrency: "INR",
       price: (product.priceCents / 100).toFixed(2),
       availability: outOfStock ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
     },

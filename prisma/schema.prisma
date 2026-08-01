@@ -203,7 +203,7 @@ model Order {
   taxCents      Int    @default(0)
   discountCents Int    @default(0)
   totalCents    Int
-  currency      String @default("usd")
+  currency      String @default("inr")
 
   shipName       String
   shipLine1      String
