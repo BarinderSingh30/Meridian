@@ -1,5 +1,5 @@
 {
-  "name": "ecommerce-app",
+  "name": "meridian",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -15,6 +15,7 @@
     "@hookform/resolvers": "^5.5.8",
     "@neondatabase/serverless": "^1.1.0",
     "@prisma/adapter-neon": "^7.9.1",
+    "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
     "@stripe/stripe-js": "^9.12.1",
     "@vercel/blob": "^2.6.1",
@@ -24,6 +25,7 @@
     "lucide-react": "^1.28.0",
     "next": "16.2.12",
     "next-auth": "^5.0.0-beta.32",
+    "pg": "^8.22.0",
     "prisma": "^7.9.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",
@@ -38,6 +40,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/pg": "^8.20.3",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
