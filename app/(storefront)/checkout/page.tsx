@@ -5,22 +5,19 @@ import { auth } from "@/lib/auth";
 import { getCart } from "@/lib/cart";
 import { getAddresses } from "@/lib/addresses";
 import { calculateShippingCents } from "@/lib/shipping";
-import { placeOrderAction } from "@/lib/actions/checkout-actions";
 import { formatMoney } from "@/lib/money";
 import { AddressForm } from "@/components/address-form";
-import { Button } from "@/components/ui/button";
+import { CheckoutButton } from "@/components/checkout-button";
 
 export const metadata: Metadata = {
   title: "Checkout",
 };
 
-type SearchParamsType = Promise<{ error?: string }>;
-
-export default async function CheckoutPage({ searchParams }: { searchParams: SearchParamsType }) {
+export default async function CheckoutPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/signin");
 
-  const [cart, addresses, sp] = await Promise.all([getCart(), getAddresses(session.user.id), searchParams]);
+  const [cart, addresses] = await Promise.all([getCart(), getAddresses(session.user.id)]);
   if (!cart || cart.items.length === 0) redirect("/cart");
 
   const stockIssues = cart.items.filter(
@@ -37,18 +34,6 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Sea
     <div className="mx-auto max-w-4xl px-4 py-8">
       <h1 className="text-2xl font-semibold">Checkout</h1>
 
-      {sp.error === "stock" && (
-        <p className="mt-4 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-          Some items in your cart are no longer available in the requested quantity. Review your cart before
-          continuing.
-        </p>
-      )}
-      {sp.error === "address" && (
-        <p className="mt-4 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-          Choose a shipping address to continue.
-        </p>
-      )}
-
       <div className="mt-6 grid grid-cols-1 gap-10 lg:grid-cols-[1fr_320px]">
         <div className="space-y-8">
           <section>
@@ -57,7 +42,7 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Sea
             {addresses.length === 0 ? (
               <AddressForm />
             ) : (
-              <form action={placeOrderAction} id="checkout-form" className="space-y-2">
+              <form id="checkout-form" className="space-y-2">
                 {addresses.map((address) => (
                   <label
                     key={address.id}
@@ -143,14 +128,7 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Sea
             </div>
           </div>
 
-          <Button
-            type="submit"
-            form="checkout-form"
-            className="w-full"
-            disabled={addresses.length === 0 || stockIssues.length > 0}
-          >
-            Place order
-          </Button>
+          <CheckoutButton formId="checkout-form" disabled={addresses.length === 0 || stockIssues.length > 0} />
           {stockIssues.length > 0 && (
             <p className="text-xs text-destructive">Resolve the stock issues above before placing your order.</p>
           )}

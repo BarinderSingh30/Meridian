@@ -40,7 +40,6 @@ model User {
   emailVerified    DateTime?
   image            String?
   role             Role      @default(CUSTOMER)
-  stripeCustomerId String?   @unique
   createdAt        DateTime  @default(now())
 
   accounts      Account[]
@@ -214,9 +213,9 @@ model Order {
   shipCountry    String
   shipPhone      String?
 
-  stripeCheckoutSessionId String?   @unique
-  stripePaymentIntentId   String?   @unique
-  paidAt                  DateTime?
+  razorpayOrderId   String?   @unique
+  razorpayPaymentId String?   @unique
+  paidAt            DateTime?
   trackingNumber          String?
 
   items OrderItem[]

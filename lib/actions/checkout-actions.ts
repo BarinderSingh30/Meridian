@@ -1,50 +1,57 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getCart } from "@/lib/cart";
 import { calculateShippingCents } from "@/lib/shipping";
+import { razorpay } from "@/lib/razorpay";
+import { env } from "@/lib/env";
 
 function generateOrderNumber() {
   const random = Math.random().toString(36).slice(2, 8).toUpperCase();
   return `ORD-${random}`;
 }
 
-/**
- * Creates a PENDING order snapshotted from the current cart + address, but
- * does not touch the cart or stock - those only change once the webhook
- * confirms payment (see lib/actions/payment-actions.ts, added in the next
- * step). If the customer abandons payment, the order simply stays PENDING
- * forever and the cart is untouched.
- */
-export async function placeOrderAction(formData: FormData) {
-  const session = await auth();
-  if (!session?.user?.id) redirect("/signin");
+export type PlaceOrderResult =
+  | { success: true; orderNumber: string; razorpayOrderId: string; amountPaise: number; keyId: string }
+  | { success: false; error: string };
 
-  const addressId = String(formData.get("addressId") ?? "");
-  if (!addressId) redirect("/checkout?error=address");
+/**
+ * Creates a PENDING order snapshotted from the current cart + address, then a
+ * matching Razorpay order for the client to open in the Checkout.js modal.
+ * Does not touch the cart or stock - those only change once the webhook
+ * confirms payment (app/api/webhooks/razorpay/route.ts). If the customer
+ * dismisses the payment modal, the order simply stays PENDING and the cart
+ * is untouched.
+ */
+export async function placeOrderAction(addressId: string): Promise<PlaceOrderResult> {
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "You must be signed in to check out." };
+  if (!addressId) return { success: false, error: "Choose a shipping address to continue." };
 
   const [address, cart] = await Promise.all([
     prisma.address.findFirst({ where: { id: addressId, userId: session.user.id } }),
     getCart(),
   ]);
 
-  if (!address) redirect("/checkout?error=address");
-  if (!cart || cart.items.length === 0) redirect("/cart");
+  if (!address) return { success: false, error: "Choose a shipping address to continue." };
+  if (!cart || cart.items.length === 0) return { success: false, error: "Your cart is empty." };
 
   const hasStockIssue = cart.items.some(
     (item) => item.product.status !== "ACTIVE" || item.quantity > item.product.stockQuantity
   );
-  if (hasStockIssue) redirect("/checkout?error=stock");
+  if (hasStockIssue) {
+    return { success: false, error: "Some items in your cart are no longer available. Review your cart." };
+  }
 
   const subtotalCents = cart.items.reduce((sum, item) => sum + item.quantity * item.product.priceCents, 0);
   const shippingCents = calculateShippingCents(subtotalCents);
   const totalCents = subtotalCents + shippingCents;
+  const orderNumber = generateOrderNumber();
 
   const order = await prisma.order.create({
     data: {
-      orderNumber: generateOrderNumber(),
+      orderNumber,
       userId: session.user.id,
       email: session.user.email ?? address.fullName,
       status: "PENDING",
@@ -76,5 +83,22 @@ export async function placeOrderAction(formData: FormData) {
     },
   });
 
-  redirect(`/checkout/success?order=${order.orderNumber}`);
+  const razorpayOrder = await razorpay.orders.create({
+    amount: totalCents,
+    currency: "INR",
+    receipt: order.orderNumber,
+  });
+
+  await prisma.order.update({
+    where: { id: order.id },
+    data: { razorpayOrderId: razorpayOrder.id },
+  });
+
+  return {
+    success: true,
+    orderNumber: order.orderNumber,
+    razorpayOrderId: razorpayOrder.id,
+    amountPaise: totalCents,
+    keyId: env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+  };
 }
