@@ -4,10 +4,12 @@ import { getProductBySlug, getRelatedProducts } from "@/lib/products/queries";
 import { getCategoryAncestors } from "@/lib/categories/queries";
 import { formatMoney } from "@/lib/money";
 import { jsonLdScriptProps } from "@/lib/json-ld";
+import { addToCartAction } from "@/lib/actions/cart-actions";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { StarRating } from "@/components/star-rating";
 import { ProductCard } from "@/components/product-card";
 import { ProductGallery } from "@/components/product-gallery";
+import { Button } from "@/components/ui/button";
 
 type Params = Promise<{ slug: string }>;
 
@@ -106,6 +108,22 @@ export default async function ProductPage({ params }: { params: Params }) {
           </p>
 
           <p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground">{product.description}</p>
+
+          <form action={addToCartAction} className="flex items-center gap-3 pt-2">
+            <input type="hidden" name="productId" value={product.id} />
+            <input
+              type="number"
+              name="quantity"
+              min={1}
+              max={product.stockQuantity || undefined}
+              defaultValue={1}
+              disabled={outOfStock}
+              className="w-20 rounded-lg border border-input bg-background px-2 py-1.5 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50"
+            />
+            <Button type="submit" disabled={outOfStock}>
+              {outOfStock ? "Out of stock" : "Add to cart"}
+            </Button>
+          </form>
         </div>
       </div>
 

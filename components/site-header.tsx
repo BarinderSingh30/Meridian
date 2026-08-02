@@ -2,10 +2,12 @@ import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { getTopLevelCategories } from "@/lib/categories/queries";
 import { signOutAction } from "@/lib/actions/auth-actions";
+import { getCart, cartItemCount } from "@/lib/cart";
 import { Button } from "@/components/ui/button";
 
 export async function SiteHeader() {
-  const [session, categories] = await Promise.all([auth(), getTopLevelCategories()]);
+  const [session, categories, cart] = await Promise.all([auth(), getTopLevelCategories(), getCart()]);
+  const itemCount = cartItemCount(cart);
 
   return (
     <header className="border-b border-border">
@@ -25,7 +27,7 @@ export async function SiteHeader() {
 
         <nav className="flex items-center gap-3 shrink-0 text-sm">
           <Link href="/cart" className="hover:text-foreground/80">
-            Cart
+            Cart{itemCount > 0 && ` (${itemCount})`}
           </Link>
 
           {session?.user ? (
