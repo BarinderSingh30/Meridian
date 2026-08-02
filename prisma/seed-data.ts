@@ -32,12 +32,160 @@ export interface SeedReview {
   body?: string;
 }
 
-function img(slug: string): string {
-  return `https://picsum.photos/seed/${slug}/800/800`;
+// Each product's photo is a manually verified real image (same reasoning as
+// CATEGORY_IMAGES below) - live keyword search reliably produced off-topic
+// results even with narrowing (e.g. "litter box" matched a street-sanitation
+// photo via the literal word "litter"), so every product slug maps to a
+// specific checked URL instead of a live query.
+const PRODUCT_IMAGES: Record<string, string> = {
+  "wireless-noise-cancelling-headphones": "https://live.staticflickr.com/8391/8502347277_2dbd81357e_b.jpg",
+  "bluetooth-earbuds-pro": "https://live.staticflickr.com/3117/3223785516_fbac56e230_b.jpg",
+  "portable-bluetooth-speaker": "https://live.staticflickr.com/4010/4526603240_3e8ef506d5_b.jpg",
+  "soundbar-with-subwoofer": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Philips_Soundbar_with_Ambisound_HTS9140_front.jpg",
+  "studio-monitor-headphones": "https://live.staticflickr.com/6215/6324180045_051eaaff26.jpg",
+  "14-inch-ultrabook-laptop": "https://live.staticflickr.com/2222/1968998469_8e99bf1e7a_b.jpg",
+  "gaming-desktop-tower-pc": "https://live.staticflickr.com/7337/9109281973_9f68bac445_b.jpg",
+  "27-inch-4k-monitor": "https://live.staticflickr.com/3293/3126952638_de8f1c04d0_b.jpg",
+  "mechanical-keyboard-rgb": "https://live.staticflickr.com/4828/31006251357_5508f788f3_b.jpg",
+  "wireless-ergonomic-mouse": "https://live.staticflickr.com/7242/6848810640_95f2076266_b.jpg",
+  "unlocked-smartphone-128gb": "https://live.staticflickr.com/3834/19081088700_ccd6f065cc_b.jpg",
+  "fast-wireless-charging-pad": "https://live.staticflickr.com/65535/51640374613_15e331cf01_b.jpg",
+  "20000mah-portable-power-bank": "https://upload.wikimedia.org/wikipedia/commons/7/75/Portable_power_bank.jpg",
+  "mirrorless-digital-camera": "https://live.staticflickr.com/1789/42528431734_b74eb0ee50_b.jpg",
+  "compact-4k-action-camera": "https://live.staticflickr.com/1751/42817827612_1eeb48093e_b.jpg",
+  "stainless-steel-chef-knife-set": "https://live.staticflickr.com/7406/11459915963_51231d86bc_b.jpg",
+  "non-stick-ceramic-cookware-set": "https://live.staticflickr.com/2210/2126504339_f3977d39d4_b.jpg",
+  "programmable-drip-coffee-maker": "https://live.staticflickr.com/195/464367776_8a69a458e8.jpg",
+  "stand-mixer-5-5-quart": "https://live.staticflickr.com/129/381448204_dc1dd5f1b8.jpg",
+  "electric-gooseneck-kettle":
+    "https://upload.wikimedia.org/wikipedia/commons/d/d9/Electric_kettle_-_%D0%AD%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D1%87%D0%B0%D0%B9%D0%BD%D0%B8%D0%BA.JPG",
+  "mid-century-modern-accent-chair": "https://live.staticflickr.com/8085/8587307253_cc43c88081_b.jpg",
+  "adjustable-height-standing-desk": "https://live.staticflickr.com/8404/8682730703_7df742687a_b.jpg",
+  "5-tier-ladder-bookshelf": "https://live.staticflickr.com/3141/2822911740_cbd9dd8f42_b.jpg",
+  "memory-foam-mattress-queen": "https://live.staticflickr.com/5065/5621753449_515964729d_b.jpg",
+  "hand-woven-wool-area-rug": "https://live.staticflickr.com/5228/5625563516_b10f6da14c_b.jpg",
+  "soy-wax-candle-gift-set": "https://live.staticflickr.com/7913/32618796757_3053426a3e_b.jpg",
+  "ceramic-table-lamp-linen-shade": "https://live.staticflickr.com/4087/5025291934_b8fabdffd6_b.jpg",
+  "framed-botanical-wall-art-set": "https://live.staticflickr.com/5736/30618066000_87622c3e9e_b.jpg",
+  "the-midnight-orchard": "https://live.staticflickr.com/3361/3506845166_297771e7ae_b.jpg",
+  "silent-tide": "https://live.staticflickr.com/3361/3506845166_297771e7ae_b.jpg",
+  "the-clockmakers-daughter": "https://live.staticflickr.com/3361/3506845166_297771e7ae_b.jpg",
+  "deep-focus-mastering-attention": "https://live.staticflickr.com/116/306559947_719f85ad3a_b.jpg",
+  "the-frugal-investors-handbook": "https://live.staticflickr.com/116/306559947_719f85ad3a_b.jpg",
+  "wild-kitchens-culinary-journey": "https://live.staticflickr.com/103/304354485_d6982b5bb6_b.jpg",
+  "the-minimalist-home": "https://live.staticflickr.com/116/306559947_719f85ad3a_b.jpg",
+  "luna-and-the-star-whale": "https://live.staticflickr.com/116/268739232_dbce99a2b0.jpg",
+  "the-brave-little-robot": "https://live.staticflickr.com/116/268739232_dbce99a2b0.jpg",
+  "classic-fit-oxford-shirt": "https://live.staticflickr.com/5107/5737174386_6e91421d45_b.jpg",
+  "slim-straight-stretch-jeans": "https://live.staticflickr.com/4173/34307404916_42e7b7a60f.jpg",
+  "merino-wool-crewneck-sweater": "https://live.staticflickr.com/4565/38855893441_84d3d1de82_b.jpg",
+  "wrap-midi-dress": "https://live.staticflickr.com/8112/8524306619_9e3a7c2dcd_b.jpg",
+  "high-waist-yoga-leggings": "https://live.staticflickr.com/3183/5716950226_a470ee014f_b.jpg",
+  "cropped-denim-jacket": "https://live.staticflickr.com/5173/5583486993_631afc1e7e_b.jpg",
+  "graphic-print-cotton-tshirt-kids": "https://live.staticflickr.com/3752/20433826702_1fc511ce48_b.jpg",
+  "fleece-zip-hoodie-kids": "https://live.staticflickr.com/8127/29761953655_24efb2b9d2_m.jpg",
+  "vitamin-c-brightening-serum": "https://live.staticflickr.com/1787/43206316182_d784d6f153_b.jpg",
+  "hydrating-gel-moisturizer": "https://live.staticflickr.com/8135/8936851760_e61caeec28_b.jpg",
+  "mineral-sunscreen-spf-50": "https://live.staticflickr.com/7652/16615683187_3b05d5ab40_b.jpg",
+  "matte-liquid-lipstick": "https://live.staticflickr.com/7145/6648957265_cfd9121e5b_b.jpg",
+  "argan-oil-repair-shampoo": "https://live.staticflickr.com/1099/839792813_1ba4ae613e_b.jpg",
+  "leave-in-detangling-conditioner": "https://live.staticflickr.com/8040/7894666920_6b239d3eb9_b.jpg",
+  "adjustable-dumbbell-set": "https://live.staticflickr.com/3270/2849545766_2b560d9b65_b.jpg",
+  "extra-thick-yoga-mat": "https://live.staticflickr.com/3570/3286289446_51157914b2_b.jpg",
+  "resistance-bands-set-5-piece": "https://live.staticflickr.com/5536/11452114374_5fb716155f_b.jpg",
+  "2-person-backpacking-tent": "https://live.staticflickr.com/3791/9031890963_4db4816d1c_b.jpg",
+  "insulated-sleeping-bag-0f": "https://live.staticflickr.com/5012/5481424833_2534f84abc_b.jpg",
+  "trekking-poles-pair": "https://live.staticflickr.com/5159/7150406985_05725b97a1_b.jpg",
+  "road-bike-helmet-mips": "https://live.staticflickr.com/4094/4857071704_36cddf2f44_b.jpg",
+  "rechargeable-bike-light-set": "https://live.staticflickr.com/2149/2471431044_7f6a52023c_b.jpg",
+  "galaxy-defender-action-figure": "https://live.staticflickr.com/2264/4510031560_9c6ca18b48_b.jpg",
+  "kingdom-traders-strategy-board-game": "https://live.staticflickr.com/8493/8353576704_fbf34cb6f0_b.jpg",
+  "1000-piece-jigsaw-puzzle-mountain-lake": "https://live.staticflickr.com/2135/2248426467_2c19594278.jpg",
+  "family-trivia-card-game": "https://live.staticflickr.com/3557/3601491848_03c3404d5b_b.jpg",
+  "500-piece-construction-brick-set": "https://live.staticflickr.com/2628/4058959195_526407f555.jpg",
+  "magnetic-tile-building-set-60pc":
+    "https://upload.wikimedia.org/wikipedia/commons/5/5a/Magna-Tiles_at_Big_Brother_Mouse_activity_day_in_Laos.jpg",
+  "sparkling-water-variety-pack-12can": "https://live.staticflickr.com/172/375773048_6f5201e3cd_b.jpg",
+  "dark-chocolate-almond-bars-12ct": "https://live.staticflickr.com/8182/7954246588_055bc9d9f3_b.jpg",
+  "kettle-cooked-sea-salt-chips": "https://live.staticflickr.com/3041/4569119702_ea5af61ccd_b.jpg",
+  "organic-extra-virgin-olive-oil-500ml": "https://live.staticflickr.com/7078/7083621931_c1b4d9f8d1_b.jpg",
+  "single-origin-ethiopian-coffee-beans": "https://live.staticflickr.com/6083/6149598235_7ff5ee3354_b.jpg",
+  "organic-green-tea-bags-100ct": "https://live.staticflickr.com/49/140902695_595d275196_b.jpg",
+  "dot-grid-bullet-journal": "https://live.staticflickr.com/2811/12684664173_6fbbf6f617.jpg",
+  "recycled-sticky-notes-pack": "https://live.staticflickr.com/3719/12313404384_9e240ec56a.jpg",
+  "bamboo-monitor-stand": "https://live.staticflickr.com/106/317211220_1b6aecc6df.jpg",
+  "adjustable-led-desk-lamp": "https://live.staticflickr.com/5263/5756031128_d157bbaed7_b.jpg",
+  "12-color-gel-pen-set": "https://live.staticflickr.com/3718/10895669544_090d6337a1_b.jpg",
+  "orthopedic-memory-foam-dog-bed": "https://live.staticflickr.com/4124/5158959598_fed62f4e13_b.jpg",
+  "durable-rope-chew-toy": "https://live.staticflickr.com/1324/709087947_3de4170b4e_b.jpg",
+  "self-cleaning-litter-box": "https://live.staticflickr.com/3448/3873959131_6699fb530a_b.jpg",
+  "interactive-feather-wand-cat-toy": "https://live.staticflickr.com/4285/35303706076_0226fc4ce6_b.jpg",
+  "10-gallon-aquarium-starter-kit": "https://live.staticflickr.com/46/129808424_32a449de79_b.jpg",
+};
+
+function img(seed: string): string {
+  // Only the "-2" second-image-variant suffix (e.g. "wireless-noise-cancelling-headphones-2")
+  // should be stripped - some product slugs legitimately end in "-<number>" themselves
+  // (e.g. "mineral-sunscreen-spf-50"), so a blanket /-\d+$/ strip is wrong.
+  const baseSlug = PRODUCT_IMAGES[seed] ? seed : seed.replace(/-2$/, "");
+  const url = PRODUCT_IMAGES[baseSlug];
+  if (!url) throw new Error(`No curated product image for slug "${baseSlug}"`);
+  return url;
 }
 
+// Category tiles are decorative and generic-keyword search kept returning
+// off-topic photos (a "STAY OFF COURSE" barrier sign for Electronics, an error
+// page for Dog Supplies), so each one is a manually verified real photo
+// instead of a live keyword search - one URL per category slug, top-level and sub.
+const CATEGORY_IMAGES: Record<string, string> = {
+  electronics: "https://live.staticflickr.com/65535/49106607223_56577b904c_b.jpg",
+  "headphones-audio": "https://cdn.stocksnap.io/img-thumbs/960w/WM2HLLDW0K.jpg",
+  "laptops-computers": "https://live.staticflickr.com/3869/14229163349_2a02c2d5d7_b.jpg",
+  "phones-accessories": "https://live.staticflickr.com/8312/7935648668_1f12f9e757_b.jpg",
+  cameras: "https://live.staticflickr.com/8592/28136602224_54514e93f4_b.jpg",
+  "home-kitchen": "https://live.staticflickr.com/3574/3771284560_170e357487.jpg",
+  "kitchen-dining":
+    "https://images.rawpixel.com/editor_1024/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvZmwzNzExMTA4ODgwNi1pbWFnZS1reWJlaWN2Zy5qcGc.jpg",
+  furniture: "https://live.staticflickr.com/6021/5956188377_22f0d7f8b1_b.jpg",
+  "home-decor": "https://live.staticflickr.com/6051/6264709385_e54b01d194_b.jpg",
+  books: "https://live.staticflickr.com/4035/4263328317_329e667327_b.jpg",
+  fiction: "https://live.staticflickr.com/3361/3506845166_297771e7ae_b.jpg",
+  "non-fiction": "https://live.staticflickr.com/2818/13331199403_fd5c4be271_b.jpg",
+  "childrens-books": "https://live.staticflickr.com/2692/4421426790_de283bf3ee.jpg",
+  clothing: "https://live.staticflickr.com/65535/47955063506_9ee4337660_b.jpg",
+  "mens-clothing": "https://upload.wikimedia.org/wikipedia/commons/8/8a/Men_Shopping_for_Clothing_Accessories.jpg",
+  "womens-clothing": "https://live.staticflickr.com/7771/18192230305_a463d1ca38_b.jpg",
+  "kids-clothing": "https://live.staticflickr.com/32/102796547_e884179455_b.jpg",
+  beauty: "https://live.staticflickr.com/7022/6519263501_2e4edefe73_b.jpg",
+  skincare: "https://live.staticflickr.com/5476/11977411936_796d4432a8_b.jpg",
+  makeup: "https://live.staticflickr.com/4178/33638438273_17ae92d3b8_b.jpg",
+  "hair-care": "https://live.staticflickr.com/4112/4983139659_0bcbeed409_b.jpg",
+  "sports-outdoors": "https://live.staticflickr.com/7256/7840793224_d872011c63_b.jpg",
+  "fitness-equipment": "https://live.staticflickr.com/8399/8668679447_dac54dfa13_b.jpg",
+  "camping-hiking": "https://live.staticflickr.com/1163/542927498_cec2346217_b.jpg",
+  cycling: "https://live.staticflickr.com/6177/6201664742_82f7a6ee3f_b.jpg",
+  "toys-games": "https://live.staticflickr.com/7400/11210299705_35a5f6cf7f.jpg",
+  "action-figures-collectibles": "https://live.staticflickr.com/2264/4510031560_9c6ca18b48_b.jpg",
+  "board-games-puzzles": "https://live.staticflickr.com/8493/8353576704_fbf34cb6f0_b.jpg",
+  "building-sets": "https://live.staticflickr.com/3056/5861374753_5f8634c9ae.jpg",
+  grocery: "https://live.staticflickr.com/8689/17376937232_c0981a27ab_b.jpg",
+  "snacks-beverages": "https://live.staticflickr.com/65535/52921581187_4991616ffd_b.jpg",
+  "pantry-staples": "https://live.staticflickr.com/2845/10505632195_c9785d80c1_b.jpg",
+  "coffee-tea": "https://live.staticflickr.com/5037/14664113462_220d2b05e5_b.jpg",
+  "office-stationery": "https://live.staticflickr.com/2641/4107304059_38bd9752e6_b.jpg",
+  "notebooks-paper": "https://live.staticflickr.com/105/300297725_3937a007eb_b.jpg",
+  "desk-accessories": "https://live.staticflickr.com/7320/27748137870_3aaf4606ab_b.jpg",
+  "writing-instruments": "https://live.staticflickr.com/3207/2851204553_900deddede_b.jpg",
+  "pet-supplies": "https://live.staticflickr.com/3758/11482181825_d7e829334f_b.jpg",
+  "dog-supplies": "https://live.staticflickr.com/3605/3478740201_9d961214b0_b.jpg",
+  "cat-supplies": "https://live.staticflickr.com/65535/52942528901_0c0694ded9_b.jpg",
+  "small-pet-aquarium": "https://live.staticflickr.com/1122/1139091512_ef8b8b6c9a_b.jpg",
+};
+
 function catImg(slug: string): string {
-  return `https://picsum.photos/seed/cat-${slug}/600/400`;
+  const url = CATEGORY_IMAGES[slug];
+  if (!url) throw new Error(`No curated category image for slug "${slug}"`);
+  return url;
 }
 
 // ---------------------------------------------------------------------------
