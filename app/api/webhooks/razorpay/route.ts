@@ -1,6 +1,7 @@
 import Razorpay from "razorpay";
 import { env } from "@/lib/env";
 import { prisma } from "@/lib/db";
+import { sendOrderConfirmationEmail } from "@/lib/email/order-confirmation";
 
 export const runtime = "nodejs";
 
@@ -45,12 +46,12 @@ export async function POST(req: Request) {
     return new Response("ok", { status: 200 });
   }
 
-  await prisma.$transaction(async (tx) => {
+  const wasProcessed = await prisma.$transaction(async (tx) => {
     const updated = await tx.order.updateMany({
       where: { id: order.id, status: "PENDING" },
       data: { status: "PAID", paidAt: new Date(), razorpayPaymentId },
     });
-    if (updated.count === 0) return; // lost a race with another webhook delivery
+    if (updated.count === 0) return false; // lost a race with another webhook delivery
 
     for (const item of order.items) {
       if (!item.productId) continue;
@@ -65,7 +66,17 @@ export async function POST(req: Request) {
     if (order.userId) {
       await tx.cartItem.deleteMany({ where: { cart: { userId: order.userId } } });
     }
+
+    return true;
   });
+
+  // Network call - deliberately outside the transaction (PgBouncer transaction
+  // mode can't hold a transaction open across external I/O).
+  if (wasProcessed) {
+    await sendOrderConfirmationEmail(order).catch((err) => {
+      console.error(`[razorpay webhook] failed to send confirmation email for ${order.orderNumber}:`, err);
+    });
+  }
 
   return new Response("ok", { status: 200 });
 }

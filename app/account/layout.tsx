@@ -3,8 +3,11 @@ import Link from "next/link";
 import { auth } from "@/lib/auth";
 
 const NAV_ITEMS = [
+  { href: "/account", label: "Overview" },
+  { href: "/account/orders", label: "Orders" },
   { href: "/account/addresses", label: "Addresses" },
   { href: "/account/wishlist", label: "Wishlist" },
+  { href: "/account/settings", label: "Settings" },
 ];
 
 export default async function AccountLayout({ children }: { children: React.ReactNode }) {
