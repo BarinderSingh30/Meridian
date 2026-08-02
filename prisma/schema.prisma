@@ -127,6 +127,13 @@ model Product {
   ratingAvg   Float @default(0)
   ratingCount Int   @default(0)
 
+  // pgvector column for semantic search. Nullable: unembedded products (not
+  // yet saved through an admin action that generates one, or a failed Gemini
+  // call) just don't participate in the vector half of ranking. Prisma has
+  // no native pgvector support yet, so this is Unsupported and both the
+  // index below and all reads/writes go through raw SQL (Tasks 2, 3, 6).
+  embedding Unsupported("vector(768)")?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
