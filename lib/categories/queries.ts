@@ -8,6 +8,19 @@ export function getTopLevelCategories() {
   });
 }
 
+/** Flat list of every category, with parent name prefixed for admin select dropdowns. */
+export async function getAllCategoriesFlat() {
+  const categories = await prisma.category.findMany({
+    orderBy: [{ parentId: "asc" }, { position: "asc" }],
+    select: { id: true, name: true, parentId: true },
+  });
+  const byId = new Map(categories.map((c) => [c.id, c]));
+  return categories.map((c) => {
+    const parent = c.parentId ? byId.get(c.parentId) : null;
+    return { id: c.id, label: parent ? `${parent.name} > ${c.name}` : c.name };
+  });
+}
+
 export function getCategoryBySlug(slug: string) {
   return prisma.category.findUnique({
     where: { slug },

@@ -4,19 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import type { Prisma } from "@/lib/generated/prisma/client";
-
-async function recomputeProductRating(tx: Prisma.TransactionClient, productId: string) {
-  const agg = await tx.review.aggregate({
-    where: { productId, status: "PUBLISHED" },
-    _avg: { rating: true },
-    _count: true,
-  });
-  await tx.product.update({
-    where: { id: productId },
-    data: { ratingAvg: agg._avg.rating ?? 0, ratingCount: agg._count },
-  });
-}
+import { recomputeProductRating } from "@/lib/reviews";
 
 export async function submitReviewAction(formData: FormData) {
   const session = await auth();
