@@ -46,6 +46,11 @@ export async function generateAndStoreEmbedding(productId: string, text: string)
   const values = await embedText(text, "RETRIEVAL_DOCUMENT");
   if (!values) return false;
   const vectorLiteral = `[${values.join(",")}]`;
-  await prisma.$executeRaw`UPDATE "Product" SET embedding = ${vectorLiteral}::vector WHERE id = ${productId}`;
-  return true;
+  try {
+    await prisma.$executeRaw`UPDATE "Product" SET embedding = ${vectorLiteral}::vector WHERE id = ${productId}`;
+    return true;
+  } catch (error) {
+    console.error("[generateAndStoreEmbedding] Failed to store embedding:", error);
+    return false;
+  }
 }
