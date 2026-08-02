@@ -54,7 +54,7 @@ async function hybridSearchProducts(params: SearchParams & { q: string }) {
   const vectorLiteral = `[${queryVector.join(",")}]`;
   const whereClause = Prisma.join(buildFilterClauses(params), " AND ");
 
-  const rows = await prisma.$queryRaw<{ id: string; total_count: bigint }[]>(Prisma.sql`
+  const fusedCte = Prisma.sql`
     WITH filtered AS (
       SELECT id, name, embedding FROM "Product" WHERE ${whereClause}
     ),
@@ -83,14 +83,17 @@ async function hybridSearchProducts(params: SearchParams & { q: string }) {
       FROM keyword_candidates k
       FULL OUTER JOIN vector_candidates v ON k.id = v.id
     )
-    SELECT id, COUNT(*) OVER() AS total_count
-    FROM fused
-    ORDER BY score DESC
-    LIMIT ${perPage} OFFSET ${offset}
-  `);
+  `;
 
-  const orderedIds = rows.map((r) => r.id);
-  const total = rows.length > 0 ? Number(rows[0].total_count) : 0;
+  const [countRows, idRows] = await Promise.all([
+    prisma.$queryRaw<{ total: bigint }[]>(Prisma.sql`${fusedCte} SELECT COUNT(*) AS total FROM fused`),
+    prisma.$queryRaw<{ id: string }[]>(
+      Prisma.sql`${fusedCte} SELECT id FROM fused ORDER BY score DESC, id ASC LIMIT ${perPage} OFFSET ${offset}`,
+    ),
+  ]);
+
+  const orderedIds = idRows.map((r) => r.id);
+  const total = Number(countRows[0]?.total ?? 0);
 
   const found = await prisma.product.findMany({
     where: { id: { in: orderedIds } },
