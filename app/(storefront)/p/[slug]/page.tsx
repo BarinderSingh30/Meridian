@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getProductBySlug, getRelatedProducts } from "@/lib/products/queries";
@@ -6,11 +7,15 @@ import { formatMoney } from "@/lib/money";
 import { jsonLdScriptProps } from "@/lib/json-ld";
 import { addToCartAction } from "@/lib/actions/cart-actions";
 import { getWishlistedProductIds } from "@/lib/wishlist";
+import { getRatingDistribution, getMyReview } from "@/lib/reviews";
+import { auth } from "@/lib/auth";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { StarRating } from "@/components/star-rating";
 import { ProductCard } from "@/components/product-card";
 import { ProductGallery } from "@/components/product-gallery";
 import { WishlistToggle } from "@/components/wishlist-toggle";
+import { RatingDistribution } from "@/components/rating-distribution";
+import { ReviewForm } from "@/components/review-form";
 import { Button } from "@/components/ui/button";
 
 type Params = Promise<{ slug: string }>;
@@ -31,10 +36,13 @@ export default async function ProductPage({ params }: { params: Params }) {
   const product = await getProductBySlug(slug);
   if (!product) notFound();
 
-  const [ancestors, related, wishlistedIds] = await Promise.all([
+  const session = await auth();
+  const [ancestors, related, wishlistedIds, ratingDistribution, myReview] = await Promise.all([
     getCategoryAncestors(product.category),
     getRelatedProducts(product.category.id, product.id),
     getWishlistedProductIds(),
+    getRatingDistribution(product.id),
+    session?.user?.id ? getMyReview(session.user.id, product.id) : Promise.resolve(null),
   ]);
 
   const outOfStock = product.stockQuantity <= 0;
@@ -133,27 +141,54 @@ export default async function ProductPage({ params }: { params: Params }) {
         </div>
       </div>
 
-      <section className="mt-16">
-        <h2 className="mb-4 text-xl font-semibold">
-          Reviews {product.ratingCount > 0 && `(${product.ratingCount})`}
-        </h2>
-        {product.reviews.length === 0 ? (
+      <section className="mt-16 grid grid-cols-1 gap-10 lg:grid-cols-[280px_1fr]">
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-xl font-semibold">
+              Reviews {product.ratingCount > 0 && `(${product.ratingCount})`}
+            </h2>
+            {product.ratingCount > 0 && (
+              <div className="mt-2 flex items-center gap-2">
+                <span className="text-2xl font-semibold">{product.ratingAvg.toFixed(1)}</span>
+                <StarRating rating={product.ratingAvg} />
+              </div>
+            )}
+            <div className="mt-3">
+              <RatingDistribution distribution={ratingDistribution} total={product.ratingCount} />
+            </div>
+          </div>
+
+          {session?.user?.id ? (
+            <ReviewForm productId={product.id} slug={product.slug} existing={myReview} />
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              <Link href="/signin" className="underline underline-offset-4">
+                Sign in
+              </Link>{" "}
+              to write a review.
+            </p>
+          )}
+        </div>
+
+        {product.reviews.filter((r) => r.userId !== session?.user?.id).length === 0 ? (
           <p className="text-sm text-muted-foreground">No reviews yet.</p>
         ) : (
           <div className="space-y-6">
-            {product.reviews.map((review) => (
-              <div key={review.id} className="border-b border-border pb-6">
-                <div className="flex items-center gap-2">
-                  <StarRating rating={review.rating} />
-                  {review.isVerifiedPurchase && (
-                    <span className="text-xs font-medium text-muted-foreground">Verified Purchase</span>
-                  )}
+            {product.reviews
+              .filter((r) => r.userId !== session?.user?.id)
+              .map((review) => (
+                <div key={review.id} className="border-b border-border pb-6">
+                  <div className="flex items-center gap-2">
+                    <StarRating rating={review.rating} />
+                    {review.isVerifiedPurchase && (
+                      <span className="text-xs font-medium text-muted-foreground">Verified Purchase</span>
+                    )}
+                  </div>
+                  {review.title && <p className="mt-1 font-medium">{review.title}</p>}
+                  <p className="mt-1 text-sm text-muted-foreground">{review.body}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{review.user.name ?? "Anonymous"}</p>
                 </div>
-                {review.title && <p className="mt-1 font-medium">{review.title}</p>}
-                <p className="mt-1 text-sm text-muted-foreground">{review.body}</p>
-                <p className="mt-1 text-xs text-muted-foreground">{review.user.name ?? "Anonymous"}</p>
-              </div>
-            ))}
+              ))}
           </div>
         )}
       </section>
