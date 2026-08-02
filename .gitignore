@@ -50,6 +50,7 @@ next-env.d.ts
 /.windsurf
 /.codex
 /.cursor
+/.superpowers
 CLAUDE.md
 AGENTS.md
 skills-lock.json
