@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { buildProductEmbeddingText, generateAndStoreEmbedding } from "@/lib/search/embed";
 
 function readProductFields(formData: FormData) {
   const priceRupees = Number(formData.get("price"));
@@ -43,7 +44,10 @@ export async function createProductAction(formData: FormData) {
       ...fields,
       images: { create: imageUrls.map((url, i) => ({ url, position: i })) },
     },
+    include: { category: { select: { name: true } } },
   });
+
+  await generateAndStoreEmbedding(product.id, buildProductEmbeddingText(fields, product.category.name));
 
   revalidatePath("/admin/products");
   redirect(`/admin/products/${product.id}`);
@@ -60,13 +64,19 @@ export async function updateProductAction(formData: FormData) {
 
   const imageUrls = readImageUrls(formData);
 
-  await prisma.$transaction([
-    prisma.product.update({ where: { id }, data: fields }),
+  const [updated] = await prisma.$transaction([
+    prisma.product.update({
+      where: { id },
+      data: fields,
+      include: { category: { select: { name: true } } },
+    }),
     prisma.productImage.deleteMany({ where: { productId: id } }),
     prisma.productImage.createMany({
       data: imageUrls.map((url, i) => ({ productId: id, url, position: i })),
     }),
   ]);
+
+  await generateAndStoreEmbedding(id, buildProductEmbeddingText(fields, updated.category.name));
 
   revalidatePath("/admin/products");
   revalidatePath(`/admin/products/${id}`);
