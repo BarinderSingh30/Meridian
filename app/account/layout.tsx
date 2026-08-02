@@ -2,7 +2,10 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 
-const NAV_ITEMS = [{ href: "/account/wishlist", label: "Wishlist" }];
+const NAV_ITEMS = [
+  { href: "/account/addresses", label: "Addresses" },
+  { href: "/account/wishlist", label: "Wishlist" },
+];
 
 export default async function AccountLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();

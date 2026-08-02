@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { prisma } from "@/lib/db";
+import { calculateShippingCents } from "@/lib/shipping";
 import { CATEGORIES, PRODUCTS, REVIEWS, REVIEWERS, type SeedCategory } from "./seed-data";
 
 const SAMPLE_ORDER_COUNT = 8;
@@ -110,7 +111,7 @@ async function createSampleOrders(orderOwners: { id: string; email: string }[]) 
     const items = Array.from({ length: itemCount }, (_, j) => products[(i * 3 + j) % products.length]);
 
     const subtotalCents = items.reduce((sum, p) => sum + p.priceCents, 0);
-    const shippingCents = subtotalCents >= 5000 ? 0 : 599;
+    const shippingCents = calculateShippingCents(subtotalCents);
     const totalCents = subtotalCents + shippingCents;
 
     const existing = await prisma.order.findUnique({ where: { orderNumber } });

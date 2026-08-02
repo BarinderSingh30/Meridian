@@ -181,7 +181,7 @@ model Address {
   city       String
   state      String?
   postalCode String
-  country    String  @default("US")
+  country    String  @default("IN")
   phone      String?
   isDefault  Boolean @default(false)
 
