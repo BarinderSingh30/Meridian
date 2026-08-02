@@ -116,6 +116,7 @@ export function ProductForm({
             name="imageUrl"
             defaultValue={url}
             placeholder={`Image ${i + 1} URL`}
+            aria-label={`Image ${i + 1} URL`}
             className="w-full rounded-lg border border-input bg-background px-3 py-1.5 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
           />
         ))}

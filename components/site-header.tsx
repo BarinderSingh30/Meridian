@@ -11,13 +11,17 @@ export async function SiteHeader() {
 
   return (
     <header className="border-b border-border">
-      <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-4 py-3">
         <Link href="/" className="text-lg font-semibold tracking-tight shrink-0">
           Meridian
         </Link>
 
-        <form action="/search" className="flex-1">
+        <form action="/search" className="order-last w-full sm:order-none sm:w-auto sm:flex-1">
+          <label htmlFor="site-search" className="sr-only">
+            Search products
+          </label>
           <input
+            id="site-search"
             type="search"
             name="q"
             placeholder="Search products..."
@@ -25,7 +29,7 @@ export async function SiteHeader() {
           />
         </form>
 
-        <nav className="flex items-center gap-3 shrink-0 text-sm">
+        <nav className="flex flex-wrap items-center gap-3 text-sm">
           <Link href="/cart" className="hover:text-foreground/80">
             Cart{itemCount > 0 && ` (${itemCount})`}
           </Link>

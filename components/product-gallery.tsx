@@ -36,6 +36,8 @@ export function ProductGallery({
               key={image.url + index}
               type="button"
               onClick={() => setActiveIndex(index)}
+              aria-label={`View image ${index + 1} of ${images.length}`}
+              aria-pressed={index === activeIndex}
               className={cn(
                 "relative size-16 overflow-hidden rounded-lg border-2",
                 index === activeIndex ? "border-foreground" : "border-transparent"

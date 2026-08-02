@@ -56,10 +56,14 @@ export async function ProductResults({
             <input type="hidden" name="q" value={searchParams.q} />
           )}
 
-          <div>
-            <p className="mb-2 text-sm font-medium">Price</p>
+          <fieldset>
+            <legend className="mb-2 text-sm font-medium">Price</legend>
             <div className="flex items-center gap-2">
+              <label className="sr-only" htmlFor="minPrice">
+                Minimum price
+              </label>
               <input
+                id="minPrice"
                 type="number"
                 name="minPrice"
                 placeholder="Min"
@@ -67,8 +71,12 @@ export async function ProductResults({
                 min={0}
                 className="w-full rounded-lg border border-input bg-background px-2 py-1.5 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
               />
-              <span className="text-muted-foreground">–</span>
+              <span className="text-muted-foreground" aria-hidden="true">–</span>
+              <label className="sr-only" htmlFor="maxPrice">
+                Maximum price
+              </label>
               <input
+                id="maxPrice"
                 type="number"
                 name="maxPrice"
                 placeholder="Max"
@@ -77,11 +85,14 @@ export async function ProductResults({
                 className="w-full rounded-lg border border-input bg-background px-2 py-1.5 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
               />
             </div>
-          </div>
+          </fieldset>
 
           <div>
-            <p className="mb-2 text-sm font-medium">Minimum rating</p>
+            <label className="mb-2 block text-sm font-medium" htmlFor="minRating">
+              Minimum rating
+            </label>
             <select
+              id="minRating"
               name="minRating"
               defaultValue={searchParams.minRating ?? ""}
               className="w-full rounded-lg border border-input bg-background px-2 py-1.5 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
