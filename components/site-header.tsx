@@ -37,9 +37,10 @@ export async function SiteHeader() {
                   Admin
                 </Link>
               )}
-              <Link href="/account" className="hover:text-foreground/80">
-                {session.user.name ?? session.user.email}
+              <Link href="/account/wishlist" className="hover:text-foreground/80">
+                Wishlist
               </Link>
+              <span className="text-muted-foreground">{session.user.name ?? session.user.email}</span>
               <form action={signOutAction}>
                 <Button type="submit" variant="ghost" size="sm">
                   Sign out

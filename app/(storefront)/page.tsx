@@ -2,13 +2,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { getTopLevelCategories } from "@/lib/categories/queries";
 import { getFeaturedProducts, getNewArrivals } from "@/lib/products/queries";
+import { getWishlistedProductIds } from "@/lib/wishlist";
 import { ProductCard } from "@/components/product-card";
 
 export default async function HomePage() {
-  const [categories, featured, newArrivals] = await Promise.all([
+  const [categories, featured, newArrivals, wishlistedIds] = await Promise.all([
     getTopLevelCategories(),
     getFeaturedProducts(8),
     getNewArrivals(8),
+    getWishlistedProductIds(),
   ]);
 
   return (
@@ -51,7 +53,7 @@ export default async function HomePage() {
           <h2 className="mb-4 text-xl font-semibold">Featured products</h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {featured.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} isWishlisted={wishlistedIds.has(product.id)} />
             ))}
           </div>
         </section>
@@ -62,7 +64,7 @@ export default async function HomePage() {
           <h2 className="mb-4 text-xl font-semibold">New arrivals</h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {newArrivals.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} isWishlisted={wishlistedIds.has(product.id)} />
             ))}
           </div>
         </section>

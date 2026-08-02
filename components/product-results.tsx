@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { SortOption, searchProducts } from "@/lib/search";
+import { getWishlistedProductIds } from "@/lib/wishlist";
 import { ProductCard } from "@/components/product-card";
 import { Pagination } from "@/components/pagination";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,7 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
 
 type Results = Awaited<ReturnType<typeof searchProducts>>;
 
-export function ProductResults({
+export async function ProductResults({
   basePath,
   searchParams,
   results,
@@ -35,6 +36,8 @@ export function ProductResults({
   results: Results;
   sort: SortOption;
 }) {
+  const wishlistedIds = await getWishlistedProductIds();
+
   function buildHref(overrides: Record<string, string | undefined>) {
     const params = new URLSearchParams();
     const merged = { ...searchParams, ...overrides };
@@ -123,7 +126,7 @@ export function ProductResults({
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             {results.products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} isWishlisted={wishlistedIds.has(product.id)} />
             ))}
           </div>
         )}

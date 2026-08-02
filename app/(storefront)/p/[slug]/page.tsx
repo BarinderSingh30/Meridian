@@ -5,10 +5,12 @@ import { getCategoryAncestors } from "@/lib/categories/queries";
 import { formatMoney } from "@/lib/money";
 import { jsonLdScriptProps } from "@/lib/json-ld";
 import { addToCartAction } from "@/lib/actions/cart-actions";
+import { getWishlistedProductIds } from "@/lib/wishlist";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { StarRating } from "@/components/star-rating";
 import { ProductCard } from "@/components/product-card";
 import { ProductGallery } from "@/components/product-gallery";
+import { WishlistToggle } from "@/components/wishlist-toggle";
 import { Button } from "@/components/ui/button";
 
 type Params = Promise<{ slug: string }>;
@@ -29,9 +31,10 @@ export default async function ProductPage({ params }: { params: Params }) {
   const product = await getProductBySlug(slug);
   if (!product) notFound();
 
-  const [ancestors, related] = await Promise.all([
+  const [ancestors, related, wishlistedIds] = await Promise.all([
     getCategoryAncestors(product.category),
     getRelatedProducts(product.category.id, product.id),
+    getWishlistedProductIds(),
   ]);
 
   const outOfStock = product.stockQuantity <= 0;
@@ -109,21 +112,24 @@ export default async function ProductPage({ params }: { params: Params }) {
 
           <p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground">{product.description}</p>
 
-          <form action={addToCartAction} className="flex items-center gap-3 pt-2">
-            <input type="hidden" name="productId" value={product.id} />
-            <input
-              type="number"
-              name="quantity"
-              min={1}
-              max={product.stockQuantity || undefined}
-              defaultValue={1}
-              disabled={outOfStock}
-              className="w-20 rounded-lg border border-input bg-background px-2 py-1.5 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50"
-            />
-            <Button type="submit" disabled={outOfStock}>
-              {outOfStock ? "Out of stock" : "Add to cart"}
-            </Button>
-          </form>
+          <div className="flex items-center gap-3 pt-2">
+            <form action={addToCartAction} className="flex items-center gap-3">
+              <input type="hidden" name="productId" value={product.id} />
+              <input
+                type="number"
+                name="quantity"
+                min={1}
+                max={product.stockQuantity || undefined}
+                defaultValue={1}
+                disabled={outOfStock}
+                className="w-20 rounded-lg border border-input bg-background px-2 py-1.5 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50"
+              />
+              <Button type="submit" disabled={outOfStock}>
+                {outOfStock ? "Out of stock" : "Add to cart"}
+              </Button>
+            </form>
+            <WishlistToggle productId={product.id} isWishlisted={wishlistedIds.has(product.id)} />
+          </div>
         </div>
       </div>
 
@@ -157,7 +163,7 @@ export default async function ProductPage({ params }: { params: Params }) {
           <h2 className="mb-4 text-xl font-semibold">Related products</h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {related.map((item) => (
-              <ProductCard key={item.id} product={item} />
+              <ProductCard key={item.id} product={item} isWishlisted={wishlistedIds.has(item.id)} />
             ))}
           </div>
         </section>
