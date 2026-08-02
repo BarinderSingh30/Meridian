@@ -3,7 +3,7 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { getAdminProducts } from "@/lib/admin/products";
 import { formatMoney } from "@/lib/money";
-import { setProductStatusAction } from "@/lib/actions/admin/product-actions";
+import { setProductStatusAction, deleteProductAction } from "@/lib/actions/admin/product-actions";
 import { Pagination } from "@/components/pagination";
 import { Button } from "@/components/ui/button";
 
@@ -96,6 +96,14 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
                   {product.status === "ARCHIVED" ? "Restore" : "Archive"}
                 </Button>
               </form>
+              {product.status === "ARCHIVED" && (
+                <form action={deleteProductAction}>
+                  <input type="hidden" name="id" value={product.id} />
+                  <Button type="submit" variant="destructive" size="sm">
+                    Delete
+                  </Button>
+                </form>
+              )}
             </div>
           );
         })}

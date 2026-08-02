@@ -84,3 +84,18 @@ export async function setProductStatusAction(formData: FormData) {
 
   revalidatePath("/admin/products");
 }
+
+export async function deleteProductAction(formData: FormData) {
+  await requireAdmin();
+
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+
+  // Only an already-archived product can be hard-deleted, so this is always
+  // a second, deliberate step after archiving - not a one-click delete on a
+  // live product. Order history survives: OrderItem.product is onDelete: SetNull
+  // and every display field on OrderItem is already snapshotted.
+  await prisma.product.deleteMany({ where: { id, status: "ARCHIVED" } });
+
+  revalidatePath("/admin/products");
+}
