@@ -39,7 +39,7 @@ Google OAuth and Resend magic-link sign-in also work if you configure your own c
 - **Snapshotted orders.** Shipping address and line items are copied onto the `Order`/`OrderItem` rows at creation time, so an order stays readable and accurate even if a product is later edited, archived, or a user's address book changes.
 - **Guest-friendly cart, auth-required checkout** (same UX as Amazon). A signed, opaque cookie (`cartToken`) identifies a guest cart; on sign-in, `events.signIn` merges it into the user's cart in one transaction and deletes the guest cart.
 - **Defense in depth on `/admin`.** Auth.js v5's Prisma adapter isn't edge-compatible, so admin access can't be gated in middleware. It's checked in `app/admin/layout.tsx` (redirects non-admins) **and** re-checked with `requireAdmin()` inside every admin Server Action, since Server Actions are publicly reachable POST endpoints regardless of what the layout renders.
-- **One search interface.** `lib/search/index.ts` exports a single `searchProducts()` used by both the search page and category pages (currently `ILIKE`/trigram-backed), so a future semantic-search implementation is a body swap, not an API change.
+- **One search interface.** `lib/search/index.ts` exports a single `searchProducts()` used by both the search page and category pages. Text queries get hybrid keyword + vector ranking (trigram similarity fused with pgvector nearest-neighbor via Reciprocal Rank Fusion); `lib/search/embed.ts` wraps the Gemini embedding call and degrades silently to keyword-only results if it fails or `GEMINI_API_KEY` isn't set.
 - **Denormalized rating aggregates.** `Product.ratingAvg`/`ratingCount` are recomputed inside the same transaction as any review create/update/delete/moderation action, so listing pages can sort by rating without a join.
 
 ## Getting started
@@ -52,6 +52,7 @@ cp .env.example .env          # fill in DATABASE_URL/DIRECT_URL for the local co
 npx prisma migrate deploy
 npx prisma db seed
 npm install
+npm run embed:backfill        # generates embeddings for the seeded products (needs GEMINI_API_KEY)
 npm run dev
 ```
 
@@ -69,7 +70,8 @@ DIRECT_URL="postgresql://meridian:meridian@localhost:5432/meridian"
 3. `npm install`
 4. `npx prisma migrate deploy`
 5. `npx prisma db seed`
-6. `npm run dev`
+6. `npm run embed:backfill` — generates embeddings for the seeded products (needs `GEMINI_API_KEY`)
+7. `npm run dev`
 
 Either way, the app is at [http://localhost:3000](http://localhost:3000).
 
@@ -83,6 +85,7 @@ See `.env.example` for the full list with comments. At minimum for local dev:
 - `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `NEXT_PUBLIC_RAZORPAY_KEY_ID` — from a Razorpay test-mode account, only needed to exercise checkout
 - `RAZORPAY_WEBHOOK_SECRET` — from the Razorpay dashboard webhook config; local webhook delivery needs a tunnel (e.g. `ngrok http 3000`) since Razorpay has no CLI-based local forwarder
 - `AUTH_GOOGLE_ID`/`SECRET`, `AUTH_RESEND_KEY`/`EMAIL_FROM` — optional, only needed for Google/magic-link sign-in
+- `GEMINI_API_KEY` — from [Google AI Studio](https://aistudio.google.com/apikey); powers semantic product search. Optional — the app boots and search still works (keyword-only) without it, but run `npm run embed:backfill` after seeding once it's set so semantic ranking has embeddings to work with
 - `BLOB_READ_WRITE_TOKEN` — optional; only needed if you wire up Vercel Blob uploads (see [Non-goals](#non-goals--scope-decisions))
 
 ### Building a production image
@@ -108,10 +111,12 @@ lib/
   actions/         Server Actions, grouped by domain
   admin/           admin-only data-layer queries
   search/          searchProducts() — the one search interface
+    index.ts         hybrid keyword+vector ranking (RRF fusion)
+    embed.ts          Gemini embedding wrapper (never throws; null = fallback)
   auth.ts          requireAdmin(), auth(), signIn/signOut
   money.ts shipping.ts   Int-cents helpers, flat-rate shipping calc
 prisma/
-  schema.prisma  seed.ts  migrations/
+  schema.prisma  seed.ts  migrations/  backfill-embeddings.ts
 ```
 
 ## Non-goals / scope decisions

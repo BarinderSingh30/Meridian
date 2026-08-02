@@ -26,7 +26,11 @@ const sortToOrderBy: Record<SortOption, Prisma.ProductOrderByWithRelationInput[]
   rating: [{ ratingAvg: "desc" }, { ratingCount: "desc" }],
 };
 
-const CANDIDATE_POOL_SIZE = 50; // per signal, before fusion
+// Per signal, before fusion. This also bounds the reported `total`/pagination for
+// hybrid search to at most 2 × CANDIDATE_POOL_SIZE fused candidates — a query
+// matching more products than that will under-report `total` and stop paginating
+// early. Fine for this catalog's ~80 products; revisit if the catalog grows.
+const CANDIDATE_POOL_SIZE = 50;
 const RRF_K = 60; // standard RRF constant
 
 function buildFilterClauses(params: SearchParams): Prisma.Sql[] {

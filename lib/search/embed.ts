@@ -5,7 +5,21 @@ import { prisma } from "@/lib/db";
 const EMBEDDING_MODEL = "gemini-embedding-001";
 export const EMBEDDING_DIMENSIONS = 768;
 
-const client = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
+// Plenty for a product description or a search query; caps request cost/latency
+// and guards against an arbitrarily long `q` from an unauthenticated request.
+const MAX_INPUT_CHARS = 2000;
+
+// This is a search-page/admin-save-blocking call — fail fast into the existing
+// keyword-only fallback rather than hang on a slow/stuck upstream request.
+const EMBEDDING_TIMEOUT_MS = 8000;
+
+let client: GoogleGenAI | null = null;
+let warnedMissingKey = false;
+
+function getClient(): GoogleGenAI {
+  if (!client) client = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
+  return client;
+}
 
 export type EmbeddingTaskType = "RETRIEVAL_DOCUMENT" | "RETRIEVAL_QUERY";
 
@@ -15,11 +29,22 @@ export type EmbeddingTaskType = "RETRIEVAL_DOCUMENT" | "RETRIEVAL_QUERY";
  * search still returns ILIKE results) rather than failing the request.
  */
 export async function embedText(text: string, taskType: EmbeddingTaskType): Promise<number[] | null> {
+  if (!env.GEMINI_API_KEY) {
+    if (!warnedMissingKey) {
+      console.warn("[embedText] GEMINI_API_KEY is not set — semantic search is disabled, falling back to keyword-only.");
+      warnedMissingKey = true;
+    }
+    return null;
+  }
   try {
-    const response = await client.models.embedContent({
+    const response = await getClient().models.embedContent({
       model: EMBEDDING_MODEL,
-      contents: [text],
-      config: { outputDimensionality: EMBEDDING_DIMENSIONS, taskType },
+      contents: [text.trim().slice(0, MAX_INPUT_CHARS)],
+      config: {
+        outputDimensionality: EMBEDDING_DIMENSIONS,
+        taskType,
+        httpOptions: { timeout: EMBEDDING_TIMEOUT_MS },
+      },
     });
     const values = response.embeddings?.[0]?.values;
     if (!values || values.length !== EMBEDDING_DIMENSIONS) return null;
@@ -44,7 +69,18 @@ export function buildProductEmbeddingText(
  */
 export async function generateAndStoreEmbedding(productId: string, text: string): Promise<boolean> {
   const values = await embedText(text, "RETRIEVAL_DOCUMENT");
-  if (!values) return false;
+  if (!values) {
+    // This may be a re-embed of a product that already has an embedding (e.g. an
+    // admin edited its name/description and this Gemini call failed). Clear any
+    // stale vector rather than leaving it surfacing for content the product no
+    // longer has — worse to rank on stale data than to not rank at all.
+    try {
+      await prisma.$executeRaw`UPDATE "Product" SET embedding = NULL WHERE id = ${productId}`;
+    } catch (error) {
+      console.error("[generateAndStoreEmbedding] Failed to clear stale embedding:", error);
+    }
+    return false;
+  }
   const vectorLiteral = `[${values.join(",")}]`;
   try {
     await prisma.$executeRaw`UPDATE "Product" SET embedding = ${vectorLiteral}::vector WHERE id = ${productId}`;
