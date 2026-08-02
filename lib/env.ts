@@ -23,6 +23,8 @@ const envSchema = z.object({
   RAZORPAY_WEBHOOK_SECRET: z.string().min(1),
   NEXT_PUBLIC_RAZORPAY_KEY_ID: z.string().min(1),
 
+  GEMINI_API_KEY: z.string().min(1),
+
   NEXT_PUBLIC_APP_URL: z.url(),
 
   BLOB_READ_WRITE_TOKEN: z.string().optional(),
