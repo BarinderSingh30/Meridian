@@ -43,21 +43,20 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
     : { products: [], total: 0, page: 1, perPage: 24, totalPages: 1 };
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Search" }]} />
-      <h1 className="mt-2 text-2xl font-semibold">
-        {sp.q ? `Results for "${sp.q}"` : "Search"}
-      </h1>
-
-      <div className="mt-6">
-        {sp.q ? (
-          <ProductResults basePath="/search" searchParams={sp} results={results} sort={sort} />
-        ) : (
-          <p className="py-16 text-center text-muted-foreground">
-            Enter a search term above to find products.
-          </p>
-        )}
+    <div className="flex flex-col gap-3 p-3">
+      <div className="flex flex-col gap-1 rounded-[6px] border border-border bg-surface px-4 py-3.5">
+        <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Search" }]} />
+        <h1 className="mt-1 text-xl font-extrabold tracking-tight">{sp.q ? `Results for "${sp.q}"` : "Search"}</h1>
+        {sp.q && <span className="text-xs text-ink-3">{results.total} products</span>}
       </div>
+
+      {sp.q ? (
+        <ProductResults basePath="/search" searchParams={sp} results={results} sort={sort} />
+      ) : (
+        <p className="rounded-[6px] border border-border bg-surface py-16 text-center text-sm text-ink-3">
+          Enter a search term above to find products.
+        </p>
+      )}
     </div>
   );
 }
