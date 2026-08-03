@@ -15,8 +15,8 @@ export function ProductGallery({
   const active = images[activeIndex] ?? images[0];
 
   return (
-    <div className="space-y-3">
-      <div className="relative aspect-square overflow-hidden rounded-xl bg-muted">
+    <div className="flex flex-col gap-2.5 rounded-[6px] border border-border bg-surface p-3">
+      <div className="relative aspect-square overflow-hidden rounded-[4px] bg-surface-muted">
         {active && (
           <Image
             src={active.url}
@@ -30,7 +30,7 @@ export function ProductGallery({
       </div>
 
       {images.length > 1 && (
-        <div className="flex gap-2">
+        <div className="grid grid-cols-5 gap-2">
           {images.map((image, index) => (
             <button
               key={image.url + index}
@@ -39,8 +39,8 @@ export function ProductGallery({
               aria-label={`View image ${index + 1} of ${images.length}`}
               aria-pressed={index === activeIndex}
               className={cn(
-                "relative size-16 overflow-hidden rounded-lg border-2",
-                index === activeIndex ? "border-foreground" : "border-transparent"
+                "relative aspect-square overflow-hidden rounded-[4px] border-2",
+                index === activeIndex ? "border-teal" : "border-border"
               )}
             >
               <Image src={image.url} alt="" fill sizes="64px" className="object-cover" />
