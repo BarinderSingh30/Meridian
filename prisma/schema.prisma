@@ -34,13 +34,13 @@ enum ReviewStatus {
 }
 
 model User {
-  id               String    @id @default(cuid())
-  name             String?
-  email            String    @unique
-  emailVerified    DateTime?
-  image            String?
-  role             Role      @default(CUSTOMER)
-  createdAt        DateTime  @default(now())
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(CUSTOMER)
+  createdAt     DateTime  @default(now())
 
   accounts      Account[]
   sessions      Session[]
@@ -118,14 +118,20 @@ model Product {
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
 
-  images        ProductImage[]
-  reviews       Review[]
-  cartItems     CartItem[]
-  orderItems    OrderItem[]
-  wishlistItems WishlistItem[]
+  images             ProductImage[]
+  reviews            Review[]
+  cartItems          CartItem[]
+  orderItems         OrderItem[]
+  wishlistItems      WishlistItem[]
+  stockNotifications StockNotification[]
 
   ratingAvg   Float @default(0)
   ratingCount Int   @default(0)
+
+  // Flexible per-product spec sheet: array of {label, value} pairs, e.g.
+  // [{"label":"Weight","value":"250g"}]. Admin editing UI is a separate,
+  // later section — for now these are seeded or set directly.
+  specs Json?
 
   // pgvector column for semantic search. Nullable: unembedded products (not
   // yet saved through an admin action that generates one, or a failed Gemini
@@ -155,10 +161,11 @@ model ProductImage {
 }
 
 model Cart {
-  id     String  @id @default(cuid())
-  userId String? @unique
-  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  token  String  @unique @default(cuid())
+  id         String  @id @default(cuid())
+  userId     String? @unique
+  user       User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token      String  @unique @default(cuid())
+  couponCode String?
 
   items CartItem[]
 
@@ -204,12 +211,14 @@ model Order {
   email       String
   status      OrderStatus @default(PENDING)
 
-  subtotalCents Int
-  shippingCents Int    @default(0)
-  taxCents      Int    @default(0)
-  discountCents Int    @default(0)
-  totalCents    Int
-  currency      String @default("inr")
+  subtotalCents  Int
+  shippingCents  Int     @default(0)
+  taxCents       Int     @default(0)
+  discountCents  Int     @default(0)
+  totalCents     Int
+  currency       String  @default("inr")
+  couponCode     String?
+  shippingMethod String  @default("standard")
 
   shipName       String
   shipLine1      String
@@ -223,7 +232,7 @@ model Order {
   razorpayOrderId   String?   @unique
   razorpayPaymentId String?   @unique
   paidAt            DateTime?
-  trackingNumber          String?
+  trackingNumber    String?
 
   items OrderItem[]
 
@@ -285,4 +294,26 @@ model WishlistItem {
 
   @@unique([userId, productId])
   @@index([userId, createdAt])
+}
+
+model Coupon {
+  id             String    @id @default(cuid())
+  code           String    @unique
+  percentOff     Int?
+  flatCents      Int?
+  active         Boolean   @default(true)
+  expiresAt      DateTime?
+  maxRedemptions Int?
+  timesRedeemed  Int       @default(0)
+  createdAt      DateTime  @default(now())
+}
+
+model StockNotification {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  email     String
+  createdAt DateTime @default(now())
+
+  @@index([productId])
 }

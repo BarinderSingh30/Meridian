@@ -18,6 +18,7 @@ export interface SeedProduct {
   stockQuantity: number;
   categorySlug: string;
   images: string[];
+  specs?: { label: string; value: string }[];
 }
 
 export interface SeedReviewer {
@@ -314,6 +315,12 @@ export const PRODUCTS: SeedProduct[] = [
     stockQuantity: 84,
     categorySlug: "headphones-audio",
     images: [img("wireless-noise-cancelling-headphones"), img("wireless-noise-cancelling-headphones-2")],
+    specs: [
+      { label: "Battery life", value: "40 hours" },
+      { label: "Connectivity", value: "Bluetooth 5.3, multipoint" },
+      { label: "Weight", value: "254g" },
+      { label: "Noise cancellation", value: "Adaptive ANC" },
+    ],
   },
   {
     slug: "bluetooth-earbuds-pro",
@@ -376,6 +383,12 @@ export const PRODUCTS: SeedProduct[] = [
     stockQuantity: 3,
     categorySlug: "laptops-computers",
     images: [img("14-inch-ultrabook-laptop"), img("14-inch-ultrabook-laptop-2")],
+    specs: [
+      { label: "Processor", value: "Fanless low-power CPU" },
+      { label: "RAM", value: "16GB" },
+      { label: "Storage", value: "512GB NVMe SSD" },
+      { label: "Weight", value: "2.6 lbs" },
+    ],
   },
   {
     slug: "gaming-desktop-tower-pc",

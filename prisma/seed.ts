@@ -40,6 +40,7 @@ async function upsertProducts() {
         priceCents: p.priceCents,
         compareAtPriceCents: p.compareAtPriceCents,
         stockQuantity: p.stockQuantity,
+        specs: p.specs,
         categoryId,
       },
       create: {
@@ -51,6 +52,7 @@ async function upsertProducts() {
         priceCents: p.priceCents,
         compareAtPriceCents: p.compareAtPriceCents,
         stockQuantity: p.stockQuantity,
+        specs: p.specs,
         categoryId,
       },
     });
