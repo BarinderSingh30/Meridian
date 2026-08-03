@@ -54,3 +54,11 @@ next-env.d.ts
 CLAUDE.md
 AGENTS.md
 skills-lock.json
+
+
+# UI stuff
+/design_handoff_meridian_dense_teal
+/docs/screenshots-for-design
+
+# git worktrees
+/.worktrees
