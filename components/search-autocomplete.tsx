@@ -33,7 +33,7 @@ export function SearchAutocomplete() {
 
       fetch(`/api/search/suggestions?q=${encodeURIComponent(query)}`, { signal: controller.signal })
         .then((res) => (res.ok ? (res.json() as Promise<Suggestion[]>) : []))
-        .then((data) => setItems(data))
+        .then((data) => setItems(Array.isArray(data) ? data : []))
         .catch((error: unknown) => {
           if (error instanceof DOMException && error.name === "AbortError") return;
           setItems([]);
@@ -42,6 +42,7 @@ export function SearchAutocomplete() {
 
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
+      abortRef.current?.abort();
     };
   }, [inputValue]);
 

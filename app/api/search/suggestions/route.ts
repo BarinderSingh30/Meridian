@@ -7,15 +7,23 @@ const SUGGESTION_LIMIT = 6;
 const MIN_QUERY_LENGTH = 2;
 
 export async function GET(req: Request) {
-  const q = new URL(req.url).searchParams.get("q")?.trim() ?? "";
+  const q = (new URL(req.url).searchParams.get("q")?.trim() ?? "").slice(0, 100);
   if (q.length < MIN_QUERY_LENGTH) {
     return Response.json([]);
   }
 
+  // Escape ILIKE wildcard characters (%, _) and the escape character itself (\)
+  // so a literal query like "50%" or "a_b" is matched as a literal substring
+  // rather than being interpreted as an ILIKE pattern. This is a correctness
+  // fix (not a SQL-injection concern, since we still bind via Prisma.sql
+  // parameters) — without it, ordinary search text containing % or _ would
+  // silently act as a wildcard instead of matching literally.
+  const escapedQ = q.replace(/[\\%_]/g, "\\$&");
+
   const ranked = await prisma.$queryRaw<{ id: string }[]>(Prisma.sql`
     SELECT id FROM "Product"
-    WHERE status = 'ACTIVE' AND similarity(name, ${q}) > 0.05
-    ORDER BY similarity(name, ${q}) DESC
+    WHERE status = 'ACTIVE' AND name ILIKE '%' || ${escapedQ} || '%'
+    ORDER BY similarity(name, ${q}) DESC, name ASC
     LIMIT ${SUGGESTION_LIMIT}
   `);
 
