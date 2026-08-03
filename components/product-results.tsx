@@ -18,9 +18,16 @@ export type ResultsSearchParams = {
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "relevance", label: "Featured" },
   { value: "newest", label: "Newest" },
-  { value: "price_asc", label: "Price: Low to High" },
-  { value: "price_desc", label: "Price: High to Low" },
-  { value: "rating", label: "Avg. Rating" },
+  { value: "price_asc", label: "Price ↑" },
+  { value: "price_desc", label: "Price ↓" },
+  { value: "rating", label: "Avg. rating" },
+];
+
+const ACTIVE_FILTER_LABELS: { key: keyof ResultsSearchParams; label: (value: string) => string }[] = [
+  { key: "inStock", label: () => "In stock only" },
+  { key: "minPrice", label: (v) => `Min ₹${v}` },
+  { key: "maxPrice", label: (v) => `Max ₹${v}` },
+  { key: "minRating", label: (v) => `${v}★ & up` },
 ];
 
 type Results = Awaited<ReturnType<typeof searchProducts>>;
@@ -30,11 +37,13 @@ export async function ProductResults({
   searchParams,
   results,
   sort,
+  sidebarTop,
 }: {
   basePath: string;
   searchParams: ResultsSearchParams;
   results: Results;
   sort: SortOption;
+  sidebarTop?: React.ReactNode;
 }) {
   const wishlistedIds = await getWishlistedProductIds();
 
@@ -48,17 +57,27 @@ export async function ProductResults({
     return `${basePath}${qs ? `?${qs}` : ""}`;
   }
 
-  return (
-    <div className="grid grid-cols-1 gap-8 lg:grid-cols-[220px_1fr]">
-      <aside>
-        <form className="space-y-6" method="GET" action={basePath}>
-          {searchParams.q !== undefined && (
-            <input type="hidden" name="q" value={searchParams.q} />
-          )}
+  const activeFilters = ACTIVE_FILTER_LABELS.filter(({ key }) => searchParams[key]).map(({ key, label }) => ({
+    key,
+    text: label(searchParams[key]!),
+  }));
 
-          <fieldset>
-            <legend className="mb-2 text-sm font-medium">Price</legend>
-            <div className="flex items-center gap-2">
+  return (
+    <div className="grid grid-cols-1 gap-3 lg:grid-cols-[220px_1fr]">
+      <aside className="flex flex-col gap-3">
+        <form
+          action={basePath}
+          method="GET"
+          className="flex flex-col gap-4 rounded-[6px] border border-border bg-surface p-[14px]"
+        >
+          {searchParams.q !== undefined && <input type="hidden" name="q" value={searchParams.q} />}
+          <input type="hidden" name="sort" value={searchParams.sort ?? ""} />
+
+          {sidebarTop}
+
+          <fieldset className="flex flex-col gap-2">
+            <legend className="text-[11px] font-bold tracking-[0.08em] text-ink">PRICE</legend>
+            <div className="flex items-center gap-1.5">
               <label className="sr-only" htmlFor="minPrice">
                 Minimum price
               </label>
@@ -69,9 +88,11 @@ export async function ProductResults({
                 placeholder="Min"
                 defaultValue={searchParams.minPrice}
                 min={0}
-                className="w-full rounded-lg border border-input bg-background px-2 py-1.5 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                className="w-full rounded-[4px] border border-border px-2 py-2 text-[11px] text-ink placeholder:text-muted-2 outline-none focus-visible:border-[1.5px] focus-visible:border-teal"
               />
-              <span className="text-muted-foreground" aria-hidden="true">–</span>
+              <span className="text-muted-2" aria-hidden="true">
+                &mdash;
+              </span>
               <label className="sr-only" htmlFor="maxPrice">
                 Maximum price
               </label>
@@ -82,49 +103,65 @@ export async function ProductResults({
                 placeholder="Max"
                 defaultValue={searchParams.maxPrice}
                 min={0}
-                className="w-full rounded-lg border border-input bg-background px-2 py-1.5 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                className="w-full rounded-[4px] border border-border px-2 py-2 text-[11px] text-ink placeholder:text-muted-2 outline-none focus-visible:border-[1.5px] focus-visible:border-teal"
               />
             </div>
           </fieldset>
 
-          <div>
-            <label className="mb-2 block text-sm font-medium" htmlFor="minRating">
-              Minimum rating
-            </label>
-            <select
-              id="minRating"
-              name="minRating"
-              defaultValue={searchParams.minRating ?? ""}
-              className="w-full rounded-lg border border-input bg-background px-2 py-1.5 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-            >
-              <option value="">Any</option>
-              <option value="4">4+ stars</option>
-              <option value="3">3+ stars</option>
-              <option value="2">2+ stars</option>
-            </select>
-          </div>
+          <fieldset className="flex flex-col gap-2">
+            <legend className="text-[11px] font-bold tracking-[0.08em] text-ink">MINIMUM RATING</legend>
+            <div className="flex flex-col gap-[7px] text-xs text-ink-3">
+              {[4, 3].map((n) => (
+                <label key={n} className="flex items-center gap-2">
+                  <input type="radio" name="minRating" value={n} defaultChecked={searchParams.minRating === String(n)} />
+                  {n}★ &amp; up
+                </label>
+              ))}
+              <label className="flex items-center gap-2">
+                <input type="radio" name="minRating" value="" defaultChecked={!searchParams.minRating} />
+                Any
+              </label>
+            </div>
+          </fieldset>
 
-          <label className="flex items-center gap-2 text-sm">
+          <label className="flex items-center gap-2 text-xs text-ink-3">
             <input type="checkbox" name="inStock" value="1" defaultChecked={searchParams.inStock === "1"} />
             In stock only
           </label>
 
-          <input type="hidden" name="sort" value={searchParams.sort ?? ""} />
-          <Button type="submit" variant="secondary" size="sm" className="w-full">
-            Apply filters
-          </Button>
+          <div className="flex gap-1.5">
+            <Button type="submit" size="sm" className="flex-1">
+              Apply filters
+            </Button>
+            <Link href={basePath}>
+              <Button type="button" variant="outline" size="sm">
+                Clear
+              </Button>
+            </Link>
+          </div>
         </form>
       </aside>
 
-      <div>
-        <div className="mb-4 flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">{results.total} products</p>
-          <div className="flex gap-1 text-sm">
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-[6px] border border-border bg-surface px-[14px] py-[9px]">
+          <div className="flex flex-wrap gap-1.5">
+            {activeFilters.map((filter) => (
+              <Link
+                key={filter.key}
+                href={buildHref({ [filter.key]: undefined, page: undefined })}
+                className="rounded-full bg-teal-tint px-[10px] py-[7px] text-[11px] font-semibold text-teal-dark"
+              >
+                {filter.text} ✕
+              </Link>
+            ))}
+          </div>
+          <div className="flex items-center gap-3.5 text-xs font-medium text-ink-3">
+            <span className="text-muted-2">Sort:</span>
             {SORT_OPTIONS.map((option) => (
               <Link
                 key={option.value}
                 href={buildHref({ sort: option.value === "relevance" ? undefined : option.value, page: undefined })}
-                className={`rounded-full px-3 py-1 ${sort === option.value ? "bg-foreground text-background" : "hover:bg-muted"}`}
+                className={sort === option.value ? "font-bold text-teal" : "hover:text-ink"}
               >
                 {option.label}
               </Link>
@@ -133,9 +170,11 @@ export async function ProductResults({
         </div>
 
         {results.products.length === 0 ? (
-          <p className="py-16 text-center text-muted-foreground">No products match these filters.</p>
+          <p className="rounded-[6px] border border-border bg-surface py-16 text-center text-sm text-ink-3">
+            No products match these filters.
+          </p>
         ) : (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-[10px] md:grid-cols-3 lg:grid-cols-4">
             {results.products.map((product) => (
               <ProductCard key={product.id} product={product} isWishlisted={wishlistedIds.has(product.id)} />
             ))}
