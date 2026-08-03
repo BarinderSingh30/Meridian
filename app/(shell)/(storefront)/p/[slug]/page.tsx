@@ -18,6 +18,7 @@ import { RatingDistribution } from "@/components/rating-distribution";
 import { ReviewForm } from "@/components/review-form";
 import { QuantityStepper } from "@/components/ui/quantity-stepper";
 import { Button } from "@/components/ui/button";
+import { NotifyMeForm } from "@/components/notify-me-form";
 
 type Params = Promise<{ slug: string }>;
 
@@ -196,10 +197,13 @@ export default async function ProductPage({ params }: { params: Params }) {
             <span className="text-[22px] font-extrabold tracking-tight">{formatMoney(product.priceCents)}</span>
 
             {outOfStock ? (
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-danger">
-                <span className="size-1.5 rounded-full bg-danger" />
-                Out of stock
-              </div>
+              <>
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-danger">
+                  <span className="size-1.5 rounded-full bg-danger" />
+                  Out of stock
+                </div>
+                <NotifyMeForm productId={product.id} />
+              </>
             ) : (
               <div className="flex items-center gap-1.5 text-xs font-semibold text-teal-dark">
                 <span className="size-1.5 rounded-full bg-teal" />
