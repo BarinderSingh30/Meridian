@@ -11,19 +11,19 @@ export function ReviewForm({
   existing?: { rating: number; title: string | null; body: string } | null;
 }) {
   return (
-    <div className="rounded-lg border border-border p-4">
-      <h3 className="text-sm font-semibold">{existing ? "Edit your review" : "Write a review"}</h3>
-      <form action={submitReviewAction} className="mt-3 space-y-3">
+    <div className="rounded-[5px] border border-border-subtle bg-surface-muted p-3.5">
+      <h3 className="text-xs font-bold text-ink">{existing ? "Edit your review" : "Write a review"}</h3>
+      <form action={submitReviewAction} className="mt-3 flex flex-col gap-3">
         <input type="hidden" name="productId" value={productId} />
         <input type="hidden" name="slug" value={slug} />
 
-        <label className="block text-sm">
-          <span className="mb-1 block font-medium">Rating</span>
+        <label className="block text-xs">
+          <span className="mb-1 block font-medium text-ink-3">Rating</span>
           <select
             name="rating"
             defaultValue={existing?.rating ?? 5}
             required
-            className="rounded-lg border border-input bg-background px-2 py-1.5 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="rounded-[5px] border border-border bg-surface px-2.5 py-2 text-xs text-ink outline-none focus-visible:border-[1.5px] focus-visible:border-teal"
           >
             {[5, 4, 3, 2, 1].map((n) => (
               <option key={n} value={n}>
@@ -33,28 +33,28 @@ export function ReviewForm({
           </select>
         </label>
 
-        <label className="block text-sm">
-          <span className="mb-1 block font-medium">Title (optional)</span>
+        <label className="block text-xs">
+          <span className="mb-1 block font-medium text-ink-3">Title (optional)</span>
           <input
             type="text"
             name="title"
             defaultValue={existing?.title ?? ""}
-            className="w-full rounded-lg border border-input bg-background px-3 py-1.5 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="w-full rounded-[5px] border border-border bg-surface px-3 py-2 text-xs text-ink outline-none focus-visible:border-[1.5px] focus-visible:border-teal"
           />
         </label>
 
-        <label className="block text-sm">
-          <span className="mb-1 block font-medium">Review</span>
+        <label className="block text-xs">
+          <span className="mb-1 block font-medium text-ink-3">Review</span>
           <textarea
             name="body"
             required
             rows={3}
             defaultValue={existing?.body ?? ""}
-            className="w-full rounded-lg border border-input bg-background px-3 py-1.5 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="w-full rounded-[5px] border border-border bg-surface px-3 py-2 text-xs text-ink outline-none focus-visible:border-[1.5px] focus-visible:border-teal"
           />
         </label>
 
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           <Button type="submit" size="sm">
             {existing ? "Update review" : "Post review"}
           </Button>
