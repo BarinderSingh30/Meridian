@@ -4,6 +4,7 @@ import { getTopLevelCategories } from "@/lib/categories/queries";
 import { signOutAction } from "@/lib/actions/auth-actions";
 import { getCart, cartItemCount } from "@/lib/cart";
 import { Button } from "@/components/ui/button";
+import { SearchAutocomplete } from "@/components/search-autocomplete";
 
 export async function SiteHeader() {
   const [session, categories, cart] = await Promise.all([auth(), getTopLevelCategories(), getCart()]);
@@ -16,18 +17,7 @@ export async function SiteHeader() {
           Meridian
         </Link>
 
-        <form action="/search" className="order-last w-full sm:order-none sm:w-auto sm:flex-1">
-          <label htmlFor="site-search" className="sr-only">
-            Search products
-          </label>
-          <input
-            id="site-search"
-            type="search"
-            name="q"
-            placeholder="Search products..."
-            className="w-full rounded-lg border border-input bg-background px-3 py-1.5 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-          />
-        </form>
+        <SearchAutocomplete />
 
         <nav className="flex flex-wrap items-center gap-3 text-sm">
           <Link href="/cart" className="hover:text-foreground/80">
