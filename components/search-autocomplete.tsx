@@ -58,7 +58,10 @@ export function SearchAutocomplete() {
       onValueChange={(value) => setInputValue(value)}
       itemToStringValue={(item: Suggestion) => item.name}
     >
-      <form action="/search" className="relative order-last w-full sm:order-none sm:w-auto sm:flex-1">
+      <form
+        action="/search"
+        className="relative order-last flex w-full items-stretch overflow-hidden rounded-[5px] bg-surface sm:order-none sm:max-w-[620px] sm:flex-1"
+      >
         <label htmlFor="site-search" className="sr-only">
           Search products
         </label>
@@ -66,27 +69,33 @@ export function SearchAutocomplete() {
           id="site-search"
           type="search"
           name="q"
-          placeholder="Search products..."
-          className="w-full rounded-lg border border-input bg-background px-3 py-1.5 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          placeholder="Search products, brands and categories"
+          className="w-full border-0 bg-transparent px-3 py-[10px] text-xs text-ink outline-none placeholder:text-muted-2"
         />
+        <button
+          type="submit"
+          className="shrink-0 bg-teal px-[18px] text-xs font-semibold text-white hover:bg-teal-dark"
+        >
+          Search
+        </button>
 
         <Autocomplete.Portal>
           <Autocomplete.Positioner sideOffset={4} className="z-50">
-            <Autocomplete.Popup className="max-h-80 w-(--anchor-width) overflow-auto rounded-lg border border-border bg-background shadow-md">
+            <Autocomplete.Popup className="max-h-80 w-(--anchor-width) overflow-auto rounded-[6px] border border-border bg-surface">
               <Autocomplete.List>
                 {(item: Suggestion) => (
                   <Autocomplete.Item
                     key={item.slug}
                     value={item}
                     onClick={() => router.push(`/p/${item.slug}`)}
-                    className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm data-[highlighted]:bg-muted"
+                    className="flex cursor-pointer items-center gap-2 px-3 py-2 text-xs data-[highlighted]:bg-surface-muted"
                   >
-                    <span className="relative size-8 shrink-0 overflow-hidden rounded-md bg-muted">
+                    <span className="relative size-8 shrink-0 overflow-hidden rounded-[4px] bg-surface-muted">
                       {item.imageUrl && (
                         <Image src={item.imageUrl} alt="" fill sizes="32px" className="object-cover" />
                       )}
                     </span>
-                    <span className="truncate">{item.name}</span>
+                    <span className="truncate text-ink">{item.name}</span>
                   </Autocomplete.Item>
                 )}
               </Autocomplete.List>
