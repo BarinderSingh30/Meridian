@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { flushSync } from "react-dom"
 import { cn } from "@/lib/utils"
 
 function QuantityStepper({
@@ -32,8 +33,14 @@ function QuantityStepper({
   }
 
   function commit(next: number, form: HTMLFormElement | null) {
-    setValue(next)
-    if (autoSubmit) form?.requestSubmit()
+    if (autoSubmit) {
+      // flushSync forces the controlled input's DOM value to update before requestSubmit
+      // reads it — without this, the form would submit the previous (stale) value.
+      flushSync(() => setValue(next))
+      form?.requestSubmit()
+    } else {
+      setValue(next)
+    }
   }
 
   return (
