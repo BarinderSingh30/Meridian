@@ -31,22 +31,22 @@ export default async function CheckoutPage() {
   const defaultAddress = addresses.find((a) => a.isDefault) ?? addresses[0];
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="text-2xl font-semibold">Checkout</h1>
+    <div className="flex flex-col gap-3 p-3">
+      <h1 className="text-xl font-extrabold tracking-tight">Checkout</h1>
 
-      <div className="mt-6 grid grid-cols-1 gap-10 lg:grid-cols-[1fr_320px]">
-        <div className="space-y-8">
-          <section>
-            <h2 className="mb-3 text-lg font-semibold">Shipping address</h2>
+      <div className="grid grid-cols-1 items-start gap-3 lg:grid-cols-[1fr_340px]">
+        <div className="flex flex-col gap-3">
+          <section className="flex flex-col gap-3.5 rounded-[6px] border border-border bg-surface p-[18px]">
+            <h2 className="text-base font-bold tracking-tight">Shipping address</h2>
 
             {addresses.length === 0 ? (
               <AddressForm />
             ) : (
-              <form id="checkout-form" className="space-y-2">
+              <form id="checkout-form" className="flex flex-col gap-2">
                 {addresses.map((address) => (
                   <label
                     key={address.id}
-                    className="flex cursor-pointer items-start gap-3 rounded-lg border border-border p-4 text-sm has-checked:border-foreground"
+                    className="flex cursor-pointer items-start gap-3 rounded-[5px] border border-border p-3.5 text-xs text-ink-2 has-checked:border-[1.5px] has-checked:border-teal has-checked:bg-teal-tint/40"
                   >
                     <input
                       type="radio"
@@ -56,7 +56,7 @@ export default async function CheckoutPage() {
                       className="mt-1"
                     />
                     <span>
-                      <span className="font-medium">{address.fullName}</span>
+                      <span className="font-semibold text-ink">{address.fullName}</span>
                       <br />
                       {address.line1}
                       {address.line2 ? `, ${address.line2}` : ""}
@@ -75,14 +75,14 @@ export default async function CheckoutPage() {
               </form>
             )}
 
-            <a href="/account/addresses" className="mt-3 inline-block text-sm underline underline-offset-4">
+            <a href="/account/addresses" className="text-xs font-semibold text-teal hover:text-teal-dark">
               Manage addresses
             </a>
           </section>
 
-          <section>
-            <h2 className="mb-3 text-lg font-semibold">Order items</h2>
-            <ul className="divide-y divide-border">
+          <section className="flex flex-col gap-3 rounded-[6px] border border-border bg-surface p-[18px]">
+            <h2 className="text-base font-bold tracking-tight">Order items</h2>
+            <div className="flex flex-col divide-y divide-border-subtle">
               {cart.items.map((item) => {
                 const image = item.product.images[0];
                 const issue =
@@ -93,45 +93,48 @@ export default async function CheckoutPage() {
                       : null;
 
                 return (
-                  <li key={item.id} className="flex items-center gap-4 py-4">
-                    <div className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-muted">
+                  <div key={item.id} className="flex items-center gap-3 py-3">
+                    <div className="relative size-14 shrink-0 overflow-hidden rounded-[4px] bg-surface-muted">
                       {image && (
-                        <Image src={image.url} alt={image.altText ?? item.product.name} fill sizes="64px" className="object-cover" />
+                        <Image src={image.url} alt={image.altText ?? item.product.name} fill sizes="56px" className="object-cover" />
                       )}
                     </div>
-                    <div className="flex-1 text-sm">
-                      <p>{item.product.name}</p>
-                      <p className="text-muted-foreground">Qty {item.quantity}</p>
-                      {issue && <p className="text-destructive">{issue}</p>}
+                    <div className="flex-1 text-xs">
+                      <p className="font-medium text-ink">{item.product.name}</p>
+                      <p className="text-ink-3">Qty {item.quantity}</p>
+                      {issue && <p className="font-medium text-danger">{issue}</p>}
                     </div>
-                    <p className="text-sm font-medium">{formatMoney(item.quantity * item.product.priceCents)}</p>
-                  </li>
+                    <p className="text-sm font-semibold">{formatMoney(item.quantity * item.product.priceCents)}</p>
+                  </div>
                 );
               })}
-            </ul>
+            </div>
           </section>
         </div>
 
-        <aside className="h-fit space-y-4 rounded-lg border border-border p-5">
-          <div className="space-y-2 text-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Subtotal</span>
-              <span>{formatMoney(subtotalCents)}</span>
+        <aside className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2.5 rounded-[6px] border border-border bg-surface p-4">
+            <h2 className="text-sm font-bold tracking-tight">Order summary</h2>
+            <div className="flex flex-col gap-2 border-t border-border-subtle pt-3 text-xs text-ink-3">
+              <div className="flex justify-between">
+                <span>Subtotal</span>
+                <span className="font-semibold text-ink">{formatMoney(subtotalCents)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Shipping</span>
+                <span className="font-semibold text-teal-dark">{shippingCents === 0 ? "Free" : formatMoney(shippingCents)}</span>
+              </div>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Shipping</span>
-              <span>{shippingCents === 0 ? "Free" : formatMoney(shippingCents)}</span>
+            <div className="flex items-baseline justify-between border-t border-border-subtle pt-3">
+              <span className="text-sm font-bold">Total</span>
+              <span className="text-[22px] font-extrabold tracking-tight">{formatMoney(totalCents)}</span>
             </div>
-            <div className="flex items-center justify-between border-t border-border pt-2 font-medium">
-              <span>Total</span>
-              <span>{formatMoney(totalCents)}</span>
-            </div>
-          </div>
 
-          <CheckoutButton formId="checkout-form" disabled={addresses.length === 0 || stockIssues.length > 0} />
-          {stockIssues.length > 0 && (
-            <p className="text-xs text-destructive">Resolve the stock issues above before placing your order.</p>
-          )}
+            <CheckoutButton formId="checkout-form" disabled={addresses.length === 0 || stockIssues.length > 0} />
+            {stockIssues.length > 0 && (
+              <p className="text-xs font-medium text-danger">Resolve the stock issues above before placing your order.</p>
+            )}
+          </div>
         </aside>
       </div>
     </div>
