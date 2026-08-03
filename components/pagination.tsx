@@ -12,17 +12,36 @@ export function Pagination({
 }) {
   if (totalPages <= 1) return null;
 
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+
   return (
-    <nav aria-label="Pagination" className="flex items-center justify-center gap-2 py-8 text-sm">
-      <PageLink page={page - 1} disabled={page <= 1} buildHref={buildHref}>
-        Previous
-      </PageLink>
-      <span className="text-muted-foreground">
+    <nav
+      aria-label="Pagination"
+      className="flex items-center justify-between rounded-[6px] border border-border bg-surface px-[14px] py-[11px] text-xs text-ink-3"
+    >
+      <span>
         Page {page} of {totalPages}
       </span>
-      <PageLink page={page + 1} disabled={page >= totalPages} buildHref={buildHref}>
-        Next
-      </PageLink>
+      <div className="flex gap-[5px] text-xs font-semibold">
+        <PageLink page={page - 1} disabled={page <= 1} buildHref={buildHref}>
+          Prev
+        </PageLink>
+        {pages.map((p) => (
+          <Link
+            key={p}
+            href={buildHref(p)}
+            className={cn(
+              "rounded-[4px] px-3 py-2",
+              p === page ? "bg-chrome-deep text-white" : "border border-border text-ink-3 hover:bg-surface-muted"
+            )}
+          >
+            {p}
+          </Link>
+        ))}
+        <PageLink page={page + 1} disabled={page >= totalPages} buildHref={buildHref}>
+          Next
+        </PageLink>
+      </div>
     </nav>
   );
 }
@@ -39,10 +58,10 @@ function PageLink({
   children: React.ReactNode;
 }) {
   if (disabled) {
-    return <span className="rounded-lg border border-border px-3 py-1.5 text-muted-foreground/50">{children}</span>;
+    return <span className="rounded-[4px] border border-border px-3 py-2 text-muted-2">{children}</span>;
   }
   return (
-    <Link href={buildHref(page)} className={cn("rounded-lg border border-border px-3 py-1.5 hover:bg-muted")}>
+    <Link href={buildHref(page)} className="rounded-[4px] border border-border px-3 py-2 text-ink-3 hover:bg-surface-muted">
       {children}
     </Link>
   );
