@@ -77,30 +77,44 @@ export default async function CategoryPage({
     })),
   };
 
+  const subcategoryFacet = category.children.length > 0 && (
+    <div className="flex flex-col gap-2">
+      <span className="text-[11px] font-bold tracking-[0.08em] text-ink">SUBCATEGORY</span>
+      <div className="flex flex-col gap-1.5 text-xs text-ink-3">
+        <Link href={`/c/${category.slug}`} className="font-semibold text-teal">
+          All {category.name}
+        </Link>
+        {category.children.map((child) => (
+          <Link key={child.id} href={`/c/${child.slug}`} className="hover:text-ink">
+            {child.name}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
+    <div className="flex flex-col gap-3 p-3">
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdScriptProps(jsonLd)} />
 
-      <Breadcrumbs items={breadcrumbItems} />
-      <h1 className="mt-2 text-2xl font-semibold">{category.name}</h1>
-
-      {category.children.length > 0 && (
-        <div className="mt-4 flex flex-wrap gap-2">
-          {category.children.map((child) => (
-            <Link
-              key={child.id}
-              href={`/c/${child.slug}`}
-              className="rounded-full border border-border px-3 py-1 text-sm hover:bg-muted"
-            >
-              {child.name}
-            </Link>
-          ))}
+      <div className="flex flex-col gap-2 rounded-[6px] border border-border bg-surface px-4 py-3.5">
+        <Breadcrumbs items={breadcrumbItems} />
+        <div className="flex items-baseline justify-between">
+          <h1 className="text-2xl font-extrabold tracking-tight">{category.name}</h1>
+          <span className="text-xs text-ink-3">
+            {results.total} products · showing {(results.page - 1) * results.perPage + 1}–
+            {Math.min(results.page * results.perPage, results.total)}
+          </span>
         </div>
-      )}
-
-      <div className="mt-6">
-        <ProductResults basePath={`/c/${slug}`} searchParams={sp} results={results} sort={sort} />
       </div>
+
+      <ProductResults
+        basePath={`/c/${slug}`}
+        searchParams={sp}
+        results={results}
+        sort={sort}
+        sidebarTop={subcategoryFacet || undefined}
+      />
     </div>
   );
 }
