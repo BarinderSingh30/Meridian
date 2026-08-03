@@ -25,11 +25,15 @@ export function ProductCard({
 }) {
   const image = product.images[0];
   const outOfStock = product.stockQuantity <= 0;
+  const hasDiscount = product.compareAtPriceCents !== null && product.compareAtPriceCents > product.priceCents;
+  const discountPct = hasDiscount
+    ? Math.round((1 - product.priceCents / product.compareAtPriceCents!) * 100)
+    : 0;
 
   return (
-    <div className="group relative flex flex-col gap-2 rounded-lg border border-transparent p-2 hover:border-border">
+    <div className="group relative overflow-hidden rounded-[6px] border border-border bg-surface hover:border-[#CBD5E1]">
       <Link href={`/p/${product.slug}`} className="contents">
-        <div className="relative aspect-square overflow-hidden rounded-lg bg-muted">
+        <div className="relative aspect-square overflow-hidden bg-surface-muted">
           {image && (
             <Image
               src={image.url}
@@ -39,30 +43,43 @@ export function ProductCard({
               className="object-cover transition-transform group-hover:scale-105"
             />
           )}
-          {outOfStock && (
-            <span className="absolute left-2 top-2 rounded bg-background/90 px-1.5 py-0.5 text-xs font-medium">
-              Out of stock
+          {outOfStock ? (
+            <span className="absolute top-1.5 left-1.5 rounded-[3px] bg-ink px-[5px] py-1 text-[9px] font-bold text-white">
+              SOLD OUT
+            </span>
+          ) : hasDiscount ? (
+            <span className="absolute top-1.5 left-1.5 rounded-[3px] bg-danger px-[5px] py-1 text-[9px] font-bold text-white">
+              -{discountPct}%
+            </span>
+          ) : null}
+        </div>
+
+        <div className="flex flex-col gap-[5px] p-[9px]">
+          <p className="line-clamp-2 min-h-[29px] text-[11px] leading-[1.3] font-medium text-[#1e293b]">
+            {product.name}
+          </p>
+          {product.ratingCount > 0 && (
+            <StarRating rating={product.ratingAvg} count={product.ratingCount} className="text-[10px] text-ink-3" />
+          )}
+          <div className="flex items-baseline gap-[5px]">
+            <span className="text-[15px] font-extrabold tracking-tight text-ink">{formatMoney(product.priceCents)}</span>
+            {hasDiscount && (
+              <span className="text-[10px] text-muted-2 line-through">{formatMoney(product.compareAtPriceCents!)}</span>
+            )}
+          </div>
+          {outOfStock ? (
+            <span className="rounded-[4px] border border-border py-1.5 text-center text-[10px] font-semibold text-muted-2">
+              Notify me
+            </span>
+          ) : (
+            <span className="rounded-[4px] bg-teal py-[7px] text-center text-[10px] font-semibold text-white">
+              Add to cart
             </span>
           )}
         </div>
-
-        <div className="space-y-1">
-          <p className="line-clamp-2 text-sm">{product.name}</p>
-          {product.ratingCount > 0 && (
-            <StarRating rating={product.ratingAvg} count={product.ratingCount} className="text-xs" />
-          )}
-          <div className="flex items-baseline gap-2">
-            <span className="text-sm font-medium">{formatMoney(product.priceCents)}</span>
-            {product.compareAtPriceCents && product.compareAtPriceCents > product.priceCents && (
-              <span className="text-xs text-muted-foreground line-through">
-                {formatMoney(product.compareAtPriceCents)}
-              </span>
-            )}
-          </div>
-        </div>
       </Link>
 
-      <WishlistToggle productId={product.id} isWishlisted={isWishlisted} className="absolute right-3 top-3" />
+      <WishlistToggle productId={product.id} isWishlisted={isWishlisted} className="absolute top-2 right-2" />
     </div>
   );
 }
