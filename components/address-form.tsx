@@ -1,6 +1,7 @@
 import { createAddressAction, updateAddressAction } from "@/lib/actions/address-actions";
 import type { AddressListItem } from "@/lib/addresses";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export function AddressForm({
   editing,
@@ -59,15 +60,9 @@ function Field({
   type?: string;
 }) {
   return (
-    <label className="block text-sm">
-      <span className="mb-1 block font-medium">{label}</span>
-      <input
-        type={type}
-        name={name}
-        defaultValue={defaultValue}
-        required={required}
-        className="w-full rounded-lg border border-input bg-background px-3 py-1.5 text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-      />
+    <label className="block text-xs">
+      <span className="mb-1 block font-medium text-ink-3">{label}</span>
+      <Input type={type} name={name} defaultValue={defaultValue} required={required} />
     </label>
   );
 }
