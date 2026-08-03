@@ -1,14 +1,6 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { auth } from "@/lib/auth";
-
-const NAV_ITEMS = [
-  { href: "/admin", label: "Dashboard" },
-  { href: "/admin/products", label: "Products" },
-  { href: "/admin/orders", label: "Orders" },
-  { href: "/admin/customers", label: "Customers" },
-  { href: "/admin/reviews", label: "Reviews" },
-];
+import { AdminNav } from "@/components/admin-nav";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -16,20 +8,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (session.user.role !== "ADMIN") redirect("/");
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[180px_1fr]">
-        <aside>
-          <p className="mb-4 text-sm font-medium">Admin</p>
-          <nav className="space-y-1 text-sm">
-            {NAV_ITEMS.map((item) => (
-              <Link key={item.href} href={item.href} className="block rounded-lg px-2 py-1.5 hover:bg-muted">
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        </aside>
-        <div>{children}</div>
-      </div>
+    <div className="flex min-h-screen">
+      <AdminNav name={session.user.name ?? session.user.email ?? "Admin"} />
+      <div className="flex-1 bg-canvas p-6">{children}</div>
     </div>
   );
 }
