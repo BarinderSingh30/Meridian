@@ -69,18 +69,7 @@ export function buildProductEmbeddingText(
  */
 export async function generateAndStoreEmbedding(productId: string, text: string): Promise<boolean> {
   const values = await embedText(text, "RETRIEVAL_DOCUMENT");
-  if (!values) {
-    // This may be a re-embed of a product that already has an embedding (e.g. an
-    // admin edited its name/description and this Gemini call failed). Clear any
-    // stale vector rather than leaving it surfacing for content the product no
-    // longer has — worse to rank on stale data than to not rank at all.
-    try {
-      await prisma.$executeRaw`UPDATE "Product" SET embedding = NULL WHERE id = ${productId}`;
-    } catch (error) {
-      console.error("[generateAndStoreEmbedding] Failed to clear stale embedding:", error);
-    }
-    return false;
-  }
+  if (!values) return false;
   const vectorLiteral = `[${values.join(",")}]`;
   try {
     await prisma.$executeRaw`UPDATE "Product" SET embedding = ${vectorLiteral}::vector WHERE id = ${productId}`;
