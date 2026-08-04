@@ -144,6 +144,22 @@ export default async function ProductPage({ params }: { params: Params }) {
             </p>
           </div>
 
+          {Array.isArray(product.specs) && product.specs.length > 0 && (
+            <div className="flex flex-col gap-3 rounded-[6px] border border-border bg-surface p-[18px]">
+              <h2 className="text-sm font-bold tracking-tight">Specifications</h2>
+              <table className="text-xs">
+                <tbody>
+                  {(product.specs as { label: string; value: string }[]).map((spec) => (
+                    <tr key={spec.label} className="border-b border-border-subtle last:border-0">
+                      <td className="py-2 pr-4 font-medium text-ink-3">{spec.label}</td>
+                      <td className="py-2 text-ink">{spec.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
           <div className="flex flex-col gap-3.5 rounded-[6px] border border-border bg-surface p-[18px]">
             <h2 className="text-sm font-bold tracking-tight">
               Reviews {product.ratingCount > 0 && `(${product.ratingCount})`}
