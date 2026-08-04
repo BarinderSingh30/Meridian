@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCategoryAncestors, getCategoryBySlug } from "@/lib/categories/queries";
 import { searchProducts, type SortOption } from "@/lib/search";
+import { getAvailableBrands } from "@/lib/products/queries";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { jsonLdScriptProps } from "@/lib/json-ld";
 import { ProductResults } from "@/components/product-results";
@@ -14,6 +15,7 @@ type SearchParamsType = Promise<{
   maxPrice?: string;
   minRating?: string;
   inStock?: string;
+  brand?: string | string[];
   page?: string;
 }>;
 
@@ -49,6 +51,7 @@ export default async function CategoryPage({
   const maxPriceCents = sp.maxPrice ? Math.round(Number(sp.maxPrice) * 100) : undefined;
   const minRating = sp.minRating ? Number(sp.minRating) : undefined;
   const inStockOnly = sp.inStock === "1";
+  const brands = Array.isArray(sp.brand) ? sp.brand : sp.brand ? [sp.brand] : [];
 
   const results = await searchProducts({
     categoryIds,
@@ -58,7 +61,10 @@ export default async function CategoryPage({
     maxPriceCents,
     minRating,
     inStockOnly,
+    brands,
   });
+
+  const availableBrands = await getAvailableBrands();
 
   const breadcrumbItems = [
     { label: "Home", href: "/" },
@@ -114,6 +120,7 @@ export default async function CategoryPage({
         results={results}
         sort={sort}
         sidebarTop={subcategoryFacet || undefined}
+        brands={availableBrands}
       />
     </div>
   );

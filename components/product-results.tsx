@@ -12,6 +12,7 @@ export type ResultsSearchParams = {
   maxPrice?: string;
   minRating?: string;
   inStock?: string;
+  brand?: string | string[];
   page?: string;
 };
 
@@ -23,7 +24,10 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "rating", label: "Avg. rating" },
 ];
 
-const ACTIVE_FILTER_LABELS: { key: keyof ResultsSearchParams; label: (value: string) => string }[] = [
+const ACTIVE_FILTER_LABELS: {
+  key: "inStock" | "minPrice" | "maxPrice" | "minRating";
+  label: (value: string) => string;
+}[] = [
   { key: "inStock", label: () => "In stock only" },
   { key: "minPrice", label: (v) => `Min ₹${v}` },
   { key: "maxPrice", label: (v) => `Max ₹${v}` },
@@ -38,20 +42,32 @@ export async function ProductResults({
   results,
   sort,
   sidebarTop,
+  brands,
 }: {
   basePath: string;
   searchParams: ResultsSearchParams;
   results: Results;
   sort: SortOption;
   sidebarTop?: React.ReactNode;
+  brands: string[];
 }) {
   const wishlistedIds = await getWishlistedProductIds();
 
-  function buildHref(overrides: Record<string, string | undefined>) {
+  const selectedBrands = Array.isArray(searchParams.brand)
+    ? searchParams.brand
+    : searchParams.brand
+      ? [searchParams.brand]
+      : [];
+
+  function buildHref(overrides: Record<string, string | string[] | undefined>) {
     const params = new URLSearchParams();
     const merged = { ...searchParams, ...overrides };
     for (const [key, value] of Object.entries(merged)) {
-      if (value) params.set(key, value);
+      if (Array.isArray(value)) {
+        for (const v of value) if (v) params.append(key, v);
+      } else if (value) {
+        params.set(key, value);
+      }
     }
     const qs = params.toString();
     return `${basePath}${qs ? `?${qs}` : ""}`;
@@ -60,6 +76,12 @@ export async function ProductResults({
   const activeFilters = ACTIVE_FILTER_LABELS.filter(({ key }) => searchParams[key]).map(({ key, label }) => ({
     key,
     text: label(searchParams[key]!),
+  }));
+
+  const brandChips = selectedBrands.map((brand) => ({
+    key: `brand-${brand}`,
+    text: brand,
+    href: buildHref({ brand: selectedBrands.filter((b) => b !== brand), page: undefined }),
   }));
 
   return (
@@ -124,6 +146,20 @@ export async function ProductResults({
             </div>
           </fieldset>
 
+          {brands.length > 0 && (
+            <fieldset className="flex flex-col gap-2">
+              <legend className="text-[11px] font-bold tracking-[0.08em] text-ink">BRAND</legend>
+              <div className="flex max-h-40 flex-col gap-1.5 overflow-y-auto text-xs text-ink-3">
+                {brands.map((brand) => (
+                  <label key={brand} className="flex items-center gap-2">
+                    <input type="checkbox" name="brand" value={brand} defaultChecked={selectedBrands.includes(brand)} />
+                    {brand}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          )}
+
           <label className="flex items-center gap-2 text-xs text-ink-3">
             <input type="checkbox" name="inStock" value="1" defaultChecked={searchParams.inStock === "1"} />
             In stock only
@@ -145,13 +181,16 @@ export async function ProductResults({
       <div className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-[6px] border border-border bg-surface px-[14px] py-[9px]">
           <div className="flex flex-wrap gap-1.5">
-            {activeFilters.map((filter) => (
+            {[
+              ...activeFilters.map((f) => ({ key: f.key, text: f.text, href: buildHref({ [f.key]: undefined, page: undefined }) })),
+              ...brandChips,
+            ].map((chip) => (
               <Link
-                key={filter.key}
-                href={buildHref({ [filter.key]: undefined, page: undefined })}
+                key={chip.key}
+                href={chip.href}
                 className="rounded-full bg-teal-tint px-[10px] py-[7px] text-[11px] font-semibold text-teal-dark"
               >
-                {filter.text} ✕
+                {chip.text} ✕
               </Link>
             ))}
           </div>
@@ -176,7 +215,7 @@ export async function ProductResults({
         ) : (
           <div className="grid grid-cols-2 gap-[10px] md:grid-cols-3 lg:grid-cols-4">
             {results.products.map((product) => (
-              <ProductCard key={product.id} product={product} isWishlisted={wishlistedIds.has(product.id)} />
+              <ProductCard key={product.id} product={product} isWishlisted={wishlistedIds.has(product.id)} highlightQuery={searchParams.q} />
             ))}
           </div>
         )}

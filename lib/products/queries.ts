@@ -55,4 +55,14 @@ export function getRelatedProducts(categoryId: string, excludeProductId: string,
   });
 }
 
+export async function getAvailableBrands() {
+  const rows = await prisma.product.findMany({
+    where: { status: "ACTIVE", brand: { not: null } },
+    select: { brand: true },
+    distinct: ["brand"],
+    orderBy: { brand: "asc" },
+  });
+  return rows.map((r) => r.brand!);
+}
+
 export type ProductListItem = Awaited<ReturnType<typeof getFeaturedProducts>>[number];

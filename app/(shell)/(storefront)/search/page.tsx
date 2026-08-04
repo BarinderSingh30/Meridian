@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { searchProducts, type SortOption } from "@/lib/search";
+import { getAvailableBrands } from "@/lib/products/queries";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ProductResults } from "@/components/product-results";
 
@@ -10,6 +11,7 @@ type SearchParamsType = Promise<{
   maxPrice?: string;
   minRating?: string;
   inStock?: string;
+  brand?: string | string[];
   page?: string;
 }>;
 
@@ -29,6 +31,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
   const maxPriceCents = sp.maxPrice ? Math.round(Number(sp.maxPrice) * 100) : undefined;
   const minRating = sp.minRating ? Number(sp.minRating) : undefined;
   const inStockOnly = sp.inStock === "1";
+  const brands = Array.isArray(sp.brand) ? sp.brand : sp.brand ? [sp.brand] : [];
 
   const results = sp.q
     ? await searchProducts({
@@ -39,8 +42,11 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
         maxPriceCents,
         minRating,
         inStockOnly,
+        brands,
       })
     : { products: [], total: 0, page: 1, perPage: 24, totalPages: 1 };
+
+  const availableBrands = await getAvailableBrands();
 
   return (
     <div className="flex flex-col gap-3 p-3">
@@ -60,7 +66,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
       </div>
 
       {sp.q ? (
-        <ProductResults basePath="/search" searchParams={sp} results={results} sort={sort} />
+        <ProductResults basePath="/search" searchParams={sp} results={results} sort={sort} brands={availableBrands} />
       ) : (
         <p className="rounded-[6px] border border-border bg-surface py-16 text-center text-sm text-ink-3">
           Enter a search term above to find products.
