@@ -20,6 +20,7 @@ export function BuyNowButton({ productId, disabled }: { productId: string; disab
       await addToCartAction(formData);
       router.push("/checkout");
     } catch (err) {
+      console.error("[buy-now] addToCart failed:", err);
       setError("Failed to add item to cart. Please try again.");
       setPending(false);
     }

@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db";
 
-const listItemSelect = {
+export const listItemSelect = {
   id: true,
   slug: true,
   name: true,
@@ -55,9 +55,13 @@ export function getRelatedProducts(categoryId: string, excludeProductId: string,
   });
 }
 
-export async function getAvailableBrands() {
+export async function getAvailableBrands(categoryIds?: string[]) {
   const rows = await prisma.product.findMany({
-    where: { status: "ACTIVE", brand: { not: null } },
+    where: {
+      status: "ACTIVE",
+      brand: { not: null },
+      ...(categoryIds?.length ? { categoryId: { in: categoryIds } } : {}),
+    },
     select: { brand: true },
     distinct: ["brand"],
     orderBy: { brand: "asc" },

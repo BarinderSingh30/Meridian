@@ -1,6 +1,7 @@
 import { Prisma } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/db";
 import { embedText } from "@/lib/search/embed";
+import { listItemSelect } from "@/lib/products/queries";
 
 export type SortOption = "relevance" | "newest" | "price_asc" | "price_desc" | "rating";
 
@@ -19,19 +20,7 @@ export type SearchParams = {
 
 const PER_PAGE_DEFAULT = 24;
 
-const productListSelect = {
-  id: true,
-  slug: true,
-  name: true,
-  priceCents: true,
-  compareAtPriceCents: true,
-  stockQuantity: true,
-  ratingAvg: true,
-  ratingCount: true,
-  images: { select: { url: true, altText: true }, orderBy: { position: "asc" as const }, take: 1 },
-} satisfies Prisma.ProductSelect;
-
-type ProductSummary = Prisma.ProductGetPayload<{ select: typeof productListSelect }>;
+type ProductSummary = Prisma.ProductGetPayload<{ select: typeof listItemSelect }>;
 
 export type SearchResult = {
   products: ProductSummary[];
@@ -126,7 +115,7 @@ async function hybridSearchProducts(params: SearchParams & { q: string }): Promi
 
   const found = await prisma.product.findMany({
     where: { id: { in: orderedIds } },
-    select: productListSelect,
+    select: listItemSelect,
   });
   const byId = new Map(found.map((p) => [p.id, p]));
   const products = orderedIds.map((id) => byId.get(id)).filter((p): p is (typeof found)[number] => p !== undefined);
@@ -189,7 +178,7 @@ async function searchProductsInner(params: SearchParams): Promise<SearchResult> 
       orderBy: sortToOrderBy[params.sort ?? "relevance"],
       skip: (page - 1) * perPage,
       take: perPage,
-      select: productListSelect,
+      select: listItemSelect,
     }),
     prisma.product.count({ where }),
   ]);

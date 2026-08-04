@@ -315,5 +315,6 @@ model StockNotification {
   email     String
   createdAt DateTime @default(now())
 
+  @@unique([productId, email])
   @@index([productId])
 }

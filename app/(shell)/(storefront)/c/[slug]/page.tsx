@@ -64,7 +64,7 @@ export default async function CategoryPage({
     brands,
   });
 
-  const availableBrands = await getAvailableBrands();
+  const availableBrands = await getAvailableBrands(categoryIds);
 
   const breadcrumbItems = [
     { label: "Home", href: "/" },
