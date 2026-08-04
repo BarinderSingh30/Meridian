@@ -13,12 +13,17 @@ export function NotifyMeForm({ productId }: { productId: string }) {
     if (typeof email !== "string" || !email) return;
 
     setState("pending");
-    const result = await notifyMeAction(productId, email);
-    if (result.success) {
-      setState("done");
-    } else {
+    try {
+      const result = await notifyMeAction(productId, email);
+      if (result.success) {
+        setState("done");
+      } else {
+        setState("error");
+        setError(result.error);
+      }
+    } catch (err) {
       setState("error");
-      setError(result.error);
+      setError(err instanceof Error ? err.message : "Failed to subscribe. Please try again.");
     }
   }
 
