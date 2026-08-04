@@ -48,6 +48,15 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
         <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Search" }]} />
         <h1 className="mt-1 text-xl font-extrabold tracking-tight">{sp.q ? `Results for "${sp.q}"` : "Search"}</h1>
         {sp.q && <span className="text-xs text-ink-3">{results.total} products</span>}
+        {sp.q && results.total === 0 && "didYouMean" in results && results.didYouMean && (
+          <p className="text-xs text-ink-3">
+            Did you mean{" "}
+            <a href={`/search?q=${encodeURIComponent(results.didYouMean)}`} className="font-semibold text-teal hover:text-teal-dark">
+              {results.didYouMean}
+            </a>
+            ?
+          </p>
+        )}
       </div>
 
       {sp.q ? (

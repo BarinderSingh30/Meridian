@@ -7,6 +7,7 @@ export type SortOption = "relevance" | "newest" | "price_asc" | "price_desc" | "
 export type SearchParams = {
   q?: string;
   categoryIds?: string[];
+  brands?: string[];
   minPriceCents?: number;
   maxPriceCents?: number;
   minRating?: number;
@@ -17,6 +18,29 @@ export type SearchParams = {
 };
 
 const PER_PAGE_DEFAULT = 24;
+
+const productListSelect = {
+  id: true,
+  slug: true,
+  name: true,
+  priceCents: true,
+  compareAtPriceCents: true,
+  stockQuantity: true,
+  ratingAvg: true,
+  ratingCount: true,
+  images: { select: { url: true, altText: true }, orderBy: { position: "asc" as const }, take: 1 },
+} satisfies Prisma.ProductSelect;
+
+type ProductSummary = Prisma.ProductGetPayload<{ select: typeof productListSelect }>;
+
+export type SearchResult = {
+  products: ProductSummary[];
+  total: number;
+  page: number;
+  perPage: number;
+  totalPages: number;
+  didYouMean?: string;
+};
 
 const sortToOrderBy: Record<SortOption, Prisma.ProductOrderByWithRelationInput[]> = {
   relevance: [{ createdAt: "desc" }],
@@ -36,6 +60,7 @@ const RRF_K = 60; // standard RRF constant
 function buildFilterClauses(params: SearchParams): Prisma.Sql[] {
   const filters: Prisma.Sql[] = [Prisma.sql`status = 'ACTIVE'`];
   if (params.categoryIds?.length) filters.push(Prisma.sql`"categoryId" IN (${Prisma.join(params.categoryIds)})`);
+  if (params.brands?.length) filters.push(Prisma.sql`brand IN (${Prisma.join(params.brands)})`);
   if (params.minPriceCents !== undefined) filters.push(Prisma.sql`"priceCents" >= ${params.minPriceCents}`);
   if (params.maxPriceCents !== undefined) filters.push(Prisma.sql`"priceCents" <= ${params.maxPriceCents}`);
   if (params.minRating !== undefined) filters.push(Prisma.sql`"ratingAvg" >= ${params.minRating}`);
@@ -48,7 +73,7 @@ function buildFilterClauses(params: SearchParams): Prisma.Sql[] {
  * back to the Phase-1 ILIKE path) only when the query embedding call fails —
  * every other outcome, including zero matches, returns a real result object.
  */
-async function hybridSearchProducts(params: SearchParams & { q: string }) {
+async function hybridSearchProducts(params: SearchParams & { q: string }): Promise<SearchResult | null> {
   const queryVector = await embedText(params.q, "RETRIEVAL_QUERY");
   if (!queryVector) return null;
 
@@ -101,17 +126,7 @@ async function hybridSearchProducts(params: SearchParams & { q: string }) {
 
   const found = await prisma.product.findMany({
     where: { id: { in: orderedIds } },
-    select: {
-      id: true,
-      slug: true,
-      name: true,
-      priceCents: true,
-      compareAtPriceCents: true,
-      stockQuantity: true,
-      ratingAvg: true,
-      ratingCount: true,
-      images: { select: { url: true, altText: true }, orderBy: { position: "asc" }, take: 1 },
-    },
+    select: productListSelect,
   });
   const byId = new Map(found.map((p) => [p.id, p]));
   const products = orderedIds.map((id) => byId.get(id)).filter((p): p is (typeof found)[number] => p !== undefined);
@@ -131,7 +146,23 @@ async function hybridSearchProducts(params: SearchParams & { q: string }) {
  * swap the implementation for hybrid keyword + vector ranking without callers
  * changing.
  */
-export async function searchProducts(params: SearchParams) {
+export async function searchProducts(params: SearchParams): Promise<SearchResult> {
+  const result = await searchProductsInner(params);
+
+  if (params.q && result.total === 0) {
+    const suggestion = await prisma.$queryRaw<{ name: string }[]>`
+      SELECT name FROM "Product"
+      WHERE status = 'ACTIVE' AND similarity(name, ${params.q}) > 0.15
+      ORDER BY similarity(name, ${params.q}) DESC
+      LIMIT 1
+    `;
+    if (suggestion[0]) return { ...result, didYouMean: suggestion[0].name };
+  }
+
+  return result;
+}
+
+async function searchProductsInner(params: SearchParams): Promise<SearchResult> {
   if (params.q && (params.sort ?? "relevance") === "relevance") {
     const hybrid = await hybridSearchProducts({ ...params, q: params.q });
     if (hybrid) return hybrid;
@@ -144,6 +175,7 @@ export async function searchProducts(params: SearchParams) {
   const where: Prisma.ProductWhereInput = {
     status: "ACTIVE",
     ...(params.categoryIds?.length ? { categoryId: { in: params.categoryIds } } : {}),
+    ...(params.brands?.length ? { brand: { in: params.brands } } : {}),
     ...(params.q ? { name: { contains: params.q, mode: "insensitive" } } : {}),
     ...(params.minPriceCents !== undefined ? { priceCents: { gte: params.minPriceCents } } : {}),
     ...(params.maxPriceCents !== undefined ? { priceCents: { lte: params.maxPriceCents } } : {}),
@@ -157,17 +189,7 @@ export async function searchProducts(params: SearchParams) {
       orderBy: sortToOrderBy[params.sort ?? "relevance"],
       skip: (page - 1) * perPage,
       take: perPage,
-      select: {
-        id: true,
-        slug: true,
-        name: true,
-        priceCents: true,
-        compareAtPriceCents: true,
-        stockQuantity: true,
-        ratingAvg: true,
-        ratingCount: true,
-        images: { select: { url: true, altText: true }, orderBy: { position: "asc" }, take: 1 },
-      },
+      select: productListSelect,
     }),
     prisma.product.count({ where }),
   ]);
