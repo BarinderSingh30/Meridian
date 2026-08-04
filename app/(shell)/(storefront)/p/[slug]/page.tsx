@@ -19,6 +19,7 @@ import { ReviewForm } from "@/components/review-form";
 import { QuantityStepper } from "@/components/ui/quantity-stepper";
 import { Button } from "@/components/ui/button";
 import { NotifyMeForm } from "@/components/notify-me-form";
+import { BuyNowButton } from "@/components/buy-now-button";
 
 type Params = Promise<{ slug: string }>;
 
@@ -227,9 +228,7 @@ export default async function ProductPage({ params }: { params: Params }) {
                 {outOfStock ? "Out of stock" : "Add to cart"}
               </Button>
             </form>
-            <Button type="button" variant="dark" disabled={outOfStock} className="w-full">
-              Buy now
-            </Button>
+            <BuyNowButton productId={product.id} disabled={outOfStock} />
             <WishlistToggle productId={product.id} isWishlisted={wishlistedIds.has(product.id)} variant="button" />
           </div>
 
