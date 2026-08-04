@@ -20,6 +20,7 @@ import { QuantityStepper } from "@/components/ui/quantity-stepper";
 import { Button } from "@/components/ui/button";
 import { NotifyMeForm } from "@/components/notify-me-form";
 import { BuyNowButton } from "@/components/buy-now-button";
+import { DeliveryEstimateForm } from "@/components/delivery-estimate-form";
 
 type Params = Promise<{ slug: string }>;
 
@@ -246,6 +247,7 @@ export default async function ProductPage({ params }: { params: Params }) {
             </form>
             <BuyNowButton productId={product.id} disabled={outOfStock} />
             <WishlistToggle productId={product.id} isWishlisted={wishlistedIds.has(product.id)} variant="button" />
+            <DeliveryEstimateForm />
           </div>
 
           <div className="flex flex-col gap-2.5 rounded-[6px] border border-border bg-surface p-4 text-[11px] leading-relaxed text-ink-3">
