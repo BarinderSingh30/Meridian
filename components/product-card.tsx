@@ -3,6 +3,9 @@ import Link from "next/link";
 import { formatMoney } from "@/lib/money";
 import { StarRating } from "@/components/star-rating";
 import { WishlistToggle } from "@/components/wishlist-toggle";
+import { NotifyMeForm } from "@/components/notify-me-form";
+import { addToCartAction } from "@/lib/actions/cart-actions";
+import { highlightMatches } from "@/components/highlighted-text";
 
 export type ProductCardData = {
   id: string;
@@ -19,9 +22,11 @@ export type ProductCardData = {
 export function ProductCard({
   product,
   isWishlisted = false,
+  highlightQuery,
 }: {
   product: ProductCardData;
   isWishlisted?: boolean;
+  highlightQuery?: string;
 }) {
   const image = product.images[0];
   const outOfStock = product.stockQuantity <= 0;
@@ -54,9 +59,9 @@ export function ProductCard({
           ) : null}
         </div>
 
-        <div className="flex flex-col gap-[5px] p-[9px]">
+        <div className="flex flex-col gap-[5px] p-[9px] pb-0">
           <p className="line-clamp-2 min-h-[29px] text-[11px] leading-[1.3] font-medium text-[#1e293b]">
-            {product.name}
+            {highlightMatches(product.name, highlightQuery)}
           </p>
           {product.ratingCount > 0 && (
             <StarRating rating={product.ratingAvg} count={product.ratingCount} className="text-[10px] text-ink-3" />
@@ -67,17 +72,24 @@ export function ProductCard({
               <span className="text-[10px] text-muted-2 line-through">{formatMoney(product.compareAtPriceCents!)}</span>
             )}
           </div>
-          {outOfStock ? (
-            <span className="rounded-[4px] border border-border py-1.5 text-center text-[10px] font-semibold text-muted-2">
-              Notify me
-            </span>
-          ) : (
-            <span className="rounded-[4px] bg-teal py-[7px] text-center text-[10px] font-semibold text-white">
-              Add to cart
-            </span>
-          )}
         </div>
       </Link>
+
+      <div className="p-[9px] pt-[5px]">
+        {outOfStock ? (
+          <NotifyMeForm productId={product.id} />
+        ) : (
+          <form action={addToCartAction}>
+            <input type="hidden" name="productId" value={product.id} />
+            <button
+              type="submit"
+              className="w-full rounded-[4px] bg-teal py-[7px] text-center text-[10px] font-semibold text-white hover:bg-teal-dark"
+            >
+              Add to cart
+            </button>
+          </form>
+        )}
+      </div>
 
       <WishlistToggle productId={product.id} isWishlisted={isWishlisted} className="absolute top-2 right-2" />
     </div>
