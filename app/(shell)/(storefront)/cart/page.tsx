@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import { getCart } from "@/lib/cart";
 import { updateCartItemAction, removeCartItemAction, clearCartAction, removeCouponAction } from "@/lib/actions/cart-actions";
 import { formatMoney } from "@/lib/money";
+import { calculateShippingCents } from "@/lib/shipping";
+import { validateCoupon, calculateDiscountCents } from "@/lib/coupons";
 import { Button } from "@/components/ui/button";
 import { QuantityStepper } from "@/components/ui/quantity-stepper";
 import { CouponForm } from "@/components/coupon-form";
@@ -38,6 +40,15 @@ export default async function CartPage() {
 
   const subtotalCents = items.reduce((sum, item) => sum + item.quantity * item.product.priceCents, 0);
   const couponCode = cart?.couponCode ?? null;
+  const shippingCents = calculateShippingCents(subtotalCents);
+
+  let discountCents = 0;
+  if (couponCode) {
+    const validation = await validateCoupon(couponCode);
+    if (validation.valid) discountCents = calculateDiscountCents(subtotalCents, validation.coupon);
+  }
+
+  const totalCents = subtotalCents + shippingCents - discountCents;
 
   return (
     <div className="flex flex-col gap-3 p-3">
@@ -141,15 +152,27 @@ export default async function CartPage() {
           ) : (
             <CouponForm />
           )}
-          <div className="flex justify-between text-xs text-ink-3">
-            <span>Subtotal ({items.length} items)</span>
-            <span className="font-semibold text-ink">{formatMoney(subtotalCents)}</span>
+          <div className="flex flex-col gap-1.5 text-xs text-ink-3">
+            <div className="flex justify-between">
+              <span>Subtotal ({items.length} items)</span>
+              <span className="font-semibold text-ink">{formatMoney(subtotalCents)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Shipping estimate</span>
+              <span className="font-semibold text-teal-dark">{shippingCents === 0 ? "Free" : formatMoney(shippingCents)}</span>
+            </div>
+            {discountCents > 0 && (
+              <div className="flex justify-between">
+                <span>Discount</span>
+                <span className="font-semibold text-danger">-{formatMoney(discountCents)}</span>
+              </div>
+            )}
           </div>
           <div className="flex items-baseline justify-between border-t border-border-subtle pt-3">
             <span className="text-sm font-bold">Total</span>
-            <span className="text-[22px] font-extrabold tracking-tight">{formatMoney(subtotalCents)}</span>
+            <span className="text-[22px] font-extrabold tracking-tight">{formatMoney(totalCents)}</span>
           </div>
-          <p className="text-[11px] text-muted-2">Shipping and taxes calculated at checkout.</p>
+          <p className="text-[11px] text-muted-2">Final shipping speed is chosen at checkout.</p>
           <Link href="/checkout" className="mt-1 block">
             <Button type="button" className="w-full">
               Proceed to checkout
