@@ -2,10 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getCart } from "@/lib/cart";
-import { updateCartItemAction, removeCartItemAction, clearCartAction } from "@/lib/actions/cart-actions";
+import { updateCartItemAction, removeCartItemAction, clearCartAction, removeCouponAction } from "@/lib/actions/cart-actions";
 import { formatMoney } from "@/lib/money";
 import { Button } from "@/components/ui/button";
 import { QuantityStepper } from "@/components/ui/quantity-stepper";
+import { CouponForm } from "@/components/coupon-form";
 
 export const metadata: Metadata = {
   title: "Cart",
@@ -28,6 +29,7 @@ export default async function CartPage() {
   }
 
   const subtotalCents = items.reduce((sum, item) => sum + item.quantity * item.product.priceCents, 0);
+  const couponCode = cart?.couponCode ?? null;
 
   return (
     <div className="flex flex-col gap-3 p-3">
@@ -119,6 +121,18 @@ export default async function CartPage() {
 
         <aside className="flex flex-col gap-2.5 rounded-[6px] border border-border bg-surface p-4">
           <h2 className="text-sm font-bold tracking-tight">Order summary</h2>
+          {couponCode ? (
+            <div className="flex items-center justify-between rounded-[5px] bg-teal-tint/40 px-2.5 py-2 text-xs">
+              <span className="font-semibold text-teal-dark">{couponCode} applied</span>
+              <form action={removeCouponAction}>
+                <button type="submit" className="font-semibold text-muted-2 hover:text-danger">
+                  Remove
+                </button>
+              </form>
+            </div>
+          ) : (
+            <CouponForm />
+          )}
           <div className="flex justify-between text-xs text-ink-3">
             <span>Subtotal ({items.length} items)</span>
             <span className="font-semibold text-ink">{formatMoney(subtotalCents)}</span>

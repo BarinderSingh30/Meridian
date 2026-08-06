@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { getOrCreateCart } from "@/lib/cart";
+import { validateCoupon } from "@/lib/coupons";
 
 export async function addToCartAction(formData: FormData) {
   const productId = String(formData.get("productId") ?? "");
@@ -60,4 +61,28 @@ export async function clearCartAction() {
   const cart = await getOrCreateCart();
   await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
   revalidatePath("/", "layout");
+}
+
+export type ApplyCouponResult = { success: true } | { success: false; error: string };
+
+export async function applyCouponAction(code: string): Promise<ApplyCouponResult> {
+  const trimmed = code.trim();
+  if (!trimmed) return { success: false, error: "Enter a coupon code." };
+
+  const validation = await validateCoupon(trimmed);
+  if (!validation.valid) return { success: false, error: validation.error };
+
+  const cart = await getOrCreateCart();
+  await prisma.cart.update({ where: { id: cart.id }, data: { couponCode: validation.coupon.code } });
+  revalidatePath("/cart");
+  revalidatePath("/checkout");
+
+  return { success: true };
+}
+
+export async function removeCouponAction() {
+  const cart = await getOrCreateCart();
+  await prisma.cart.update({ where: { id: cart.id }, data: { couponCode: null } });
+  revalidatePath("/cart");
+  revalidatePath("/checkout");
 }
