@@ -55,6 +55,20 @@ export function getRelatedProducts(categoryId: string, excludeProductId: string,
   });
 }
 
+export async function getCartCrossSell(items: { productId: string; categoryId: string }[], limit = 6) {
+  if (items.length === 0) return [];
+
+  const categoryIds = [...new Set(items.map((i) => i.categoryId))];
+  const excludeIds = items.map((i) => i.productId);
+
+  return prisma.product.findMany({
+    where: { status: "ACTIVE", categoryId: { in: categoryIds }, id: { notIn: excludeIds } },
+    orderBy: [{ ratingAvg: "desc" }, { createdAt: "desc" }],
+    take: limit,
+    select: listItemSelect,
+  });
+}
+
 export async function getAvailableBrands(categoryIds?: string[]) {
   const rows = await prisma.product.findMany({
     where: {

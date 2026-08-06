@@ -7,6 +7,9 @@ import { formatMoney } from "@/lib/money";
 import { Button } from "@/components/ui/button";
 import { QuantityStepper } from "@/components/ui/quantity-stepper";
 import { CouponForm } from "@/components/coupon-form";
+import { getCartCrossSell } from "@/lib/products/queries";
+import { getWishlistedProductIds } from "@/lib/wishlist";
+import { ProductCard } from "@/components/product-card";
 
 export const metadata: Metadata = {
   title: "Cart",
@@ -27,6 +30,11 @@ export default async function CartPage() {
       </div>
     );
   }
+
+  const [crossSell, wishlistedIds] = await Promise.all([
+    getCartCrossSell(items.map((item) => ({ productId: item.productId, categoryId: item.product.categoryId }))),
+    getWishlistedProductIds(),
+  ]);
 
   const subtotalCents = items.reduce((sum, item) => sum + item.quantity * item.product.priceCents, 0);
   const couponCode = cart?.couponCode ?? null;
@@ -149,6 +157,17 @@ export default async function CartPage() {
           </Link>
         </aside>
       </div>
+
+      {crossSell.length > 0 && (
+        <section className="rounded-[6px] border border-border bg-surface p-4">
+          <h2 className="mb-3 text-[15px] font-bold tracking-tight">You might also like</h2>
+          <div className="grid grid-cols-2 gap-[10px] sm:grid-cols-3 lg:grid-cols-6">
+            {crossSell.map((item) => (
+              <ProductCard key={item.id} product={item} isWishlisted={wishlistedIds.has(item.id)} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

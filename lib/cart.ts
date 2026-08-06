@@ -17,6 +17,7 @@ const cartInclude = {
           priceCents: true,
           stockQuantity: true,
           status: true,
+          categoryId: true,
           images: { select: { url: true, altText: true }, orderBy: { position: "asc" as const }, take: 1 },
         },
       },
