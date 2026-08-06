@@ -55,3 +55,9 @@ export async function removeCartItemAction(formData: FormData) {
 
   revalidatePath("/", "layout");
 }
+
+export async function clearCartAction() {
+  const cart = await getOrCreateCart();
+  await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
+  revalidatePath("/", "layout");
+}

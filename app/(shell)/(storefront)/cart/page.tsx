@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getCart } from "@/lib/cart";
-import { updateCartItemAction, removeCartItemAction } from "@/lib/actions/cart-actions";
+import { updateCartItemAction, removeCartItemAction, clearCartAction } from "@/lib/actions/cart-actions";
 import { formatMoney } from "@/lib/money";
 import { Button } from "@/components/ui/button";
 import { QuantityStepper } from "@/components/ui/quantity-stepper";
@@ -105,10 +105,15 @@ export default async function CartPage() {
             })}
           </div>
 
-          <div className="rounded-[6px] border border-border bg-surface px-4 py-3">
+          <div className="flex items-center justify-between rounded-[6px] border border-border bg-surface px-4 py-3">
             <Link href="/" className="text-xs font-semibold text-teal hover:text-teal-dark">
               ← Continue shopping
             </Link>
+            <form action={clearCartAction}>
+              <button type="submit" className="text-xs font-semibold text-muted-2 hover:text-danger">
+                Clear cart
+              </button>
+            </form>
           </div>
         </div>
 
