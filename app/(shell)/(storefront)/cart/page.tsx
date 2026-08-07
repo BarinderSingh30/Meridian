@@ -44,8 +44,12 @@ export default async function CartPage() {
 
   let discountCents = 0;
   if (couponCode) {
-    const validation = await validateCoupon(couponCode);
-    if (validation.valid) discountCents = calculateDiscountCents(subtotalCents, validation.coupon);
+    try {
+      const validation = await validateCoupon(couponCode);
+      if (validation.valid) discountCents = calculateDiscountCents(subtotalCents, validation.coupon);
+    } catch {
+      discountCents = 0;
+    }
   }
 
   const totalCents = subtotalCents + shippingCents - discountCents;
