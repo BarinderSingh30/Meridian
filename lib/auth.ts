@@ -44,6 +44,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           update: {},
           create: { userId: user.id },
         });
+        if (guestCart.couponCode && !userCart.couponCode) {
+          await tx.cart.update({ where: { id: userCart.id }, data: { couponCode: guestCart.couponCode } });
+        }
         for (const item of guestCart.items) {
           await tx.cartItem.upsert({
             where: { cartId_productId: { cartId: userCart.id, productId: item.productId } },

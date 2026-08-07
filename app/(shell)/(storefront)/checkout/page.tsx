@@ -7,7 +7,6 @@ import { getAddresses } from "@/lib/addresses";
 import { formatMoney } from "@/lib/money";
 import { calculateDiscountCents, validateCoupon } from "@/lib/coupons";
 import { AddressForm } from "@/components/address-form";
-import { CheckoutButton } from "@/components/checkout-button";
 import { CheckoutOrderSummary } from "@/components/checkout-order-summary";
 
 export const metadata: Metadata = {

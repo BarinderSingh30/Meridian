@@ -20,7 +20,7 @@ export async function validateCoupon(code: string): Promise<CouponValidation> {
 }
 
 export function calculateDiscountCents(subtotalCents: number, coupon: CouponRecord): number {
-  if (coupon.percentOff) return Math.round(subtotalCents * (coupon.percentOff / 100));
+  if (coupon.percentOff) return Math.min(Math.round(subtotalCents * (coupon.percentOff / 100)), subtotalCents);
   if (coupon.flatCents) return Math.min(coupon.flatCents, subtotalCents);
   return 0;
 }

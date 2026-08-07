@@ -29,7 +29,7 @@ export async function placeOrderAction(addressId: string, shippingMethod: Shippi
   const session = await auth();
   if (!session?.user?.id) return { success: false, error: "You must be signed in to check out." };
   if (!addressId) return { success: false, error: "Choose a shipping address to continue." };
-  if (!(shippingMethod in SHIPPING_METHODS)) {
+  if (!Object.prototype.hasOwnProperty.call(SHIPPING_METHODS, shippingMethod)) {
     return { success: false, error: "Choose a valid delivery speed." };
   }
 
@@ -56,16 +56,8 @@ export async function placeOrderAction(addressId: string, shippingMethod: Shippi
   if (cart.couponCode) {
     const validation = await validateCoupon(cart.couponCode);
     if (validation.valid) {
-      const redemption = await prisma.$queryRaw<{ code: string }[]>`
-        UPDATE "Coupon" SET "timesRedeemed" = "timesRedeemed" + 1
-        WHERE "code" = ${validation.coupon.code}
-          AND ("maxRedemptions" IS NULL OR "timesRedeemed" < "maxRedemptions")
-        RETURNING "code"
-      `;
-      if (redemption.length > 0) {
-        discountCents = calculateDiscountCents(subtotalCents, validation.coupon);
-        couponCode = validation.coupon.code;
-      }
+      discountCents = calculateDiscountCents(subtotalCents, validation.coupon);
+      couponCode = validation.coupon.code;
     }
   }
 

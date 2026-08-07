@@ -63,8 +63,23 @@ export async function POST(req: Request) {
       });
     }
 
+    if (order.couponCode) {
+      // Conditional increment - claims a redemption only if the coupon still has room.
+      // Payment is already captured at this point, so if the limit was hit by other
+      // orders first, we don't retroactively fail this payment - we just stop
+      // incrementing past the cap. This is the ONLY place a redemption is claimed:
+      // moving it here (from order-creation time) means an abandoned checkout never
+      // burns a redemption, since this code only runs once payment is confirmed.
+      await tx.$executeRaw`
+        UPDATE "Coupon" SET "timesRedeemed" = "timesRedeemed" + 1
+        WHERE "code" = ${order.couponCode}
+          AND ("maxRedemptions" IS NULL OR "timesRedeemed" < "maxRedemptions")
+      `;
+    }
+
     if (order.userId) {
       await tx.cartItem.deleteMany({ where: { cart: { userId: order.userId } } });
+      await tx.cart.updateMany({ where: { userId: order.userId }, data: { couponCode: null } });
     }
 
     return true;
