@@ -6,6 +6,7 @@ export type CouponValidation = { valid: true; coupon: CouponRecord } | { valid: 
 
 export async function validateCoupon(code: string): Promise<CouponValidation> {
   const normalized = code.trim().toUpperCase();
+  if (normalized.length === 0 || normalized.length > 32) return { valid: false, error: "Invalid coupon code." };
   const coupon = await prisma.coupon.findUnique({ where: { code: normalized } });
 
   if (!coupon) return { valid: false, error: "Invalid coupon code." };

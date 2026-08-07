@@ -3,7 +3,8 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getCart } from "@/lib/cart";
-import { calculateShippingCents } from "@/lib/shipping";
+import { calculateShippingCents, SHIPPING_METHODS, type ShippingMethod } from "@/lib/shipping";
+import { validateCoupon, calculateDiscountCents } from "@/lib/coupons";
 import { razorpay } from "@/lib/razorpay";
 import { env } from "@/lib/env";
 
@@ -24,10 +25,13 @@ export type PlaceOrderResult =
  * dismisses the payment modal, the order simply stays PENDING and the cart
  * is untouched.
  */
-export async function placeOrderAction(addressId: string): Promise<PlaceOrderResult> {
+export async function placeOrderAction(addressId: string, shippingMethod: ShippingMethod): Promise<PlaceOrderResult> {
   const session = await auth();
   if (!session?.user?.id) return { success: false, error: "You must be signed in to check out." };
   if (!addressId) return { success: false, error: "Choose a shipping address to continue." };
+  if (!(shippingMethod in SHIPPING_METHODS)) {
+    return { success: false, error: "Choose a valid delivery speed." };
+  }
 
   const [address, cart] = await Promise.all([
     prisma.address.findFirst({ where: { id: addressId, userId: session.user.id } }),
@@ -45,8 +49,27 @@ export async function placeOrderAction(addressId: string): Promise<PlaceOrderRes
   }
 
   const subtotalCents = cart.items.reduce((sum, item) => sum + item.quantity * item.product.priceCents, 0);
-  const shippingCents = calculateShippingCents(subtotalCents);
-  const totalCents = subtotalCents + shippingCents;
+  const shippingCents = calculateShippingCents(subtotalCents, shippingMethod);
+
+  let discountCents = 0;
+  let couponCode: string | null = null;
+  if (cart.couponCode) {
+    const validation = await validateCoupon(cart.couponCode);
+    if (validation.valid) {
+      const redemption = await prisma.$queryRaw<{ code: string }[]>`
+        UPDATE "Coupon" SET "timesRedeemed" = "timesRedeemed" + 1
+        WHERE "code" = ${validation.coupon.code}
+          AND ("maxRedemptions" IS NULL OR "timesRedeemed" < "maxRedemptions")
+        RETURNING "code"
+      `;
+      if (redemption.length > 0) {
+        discountCents = calculateDiscountCents(subtotalCents, validation.coupon);
+        couponCode = validation.coupon.code;
+      }
+    }
+  }
+
+  const totalCents = subtotalCents + shippingCents - discountCents;
   const orderNumber = generateOrderNumber();
 
   const order = await prisma.order.create({
@@ -58,7 +81,9 @@ export async function placeOrderAction(addressId: string): Promise<PlaceOrderRes
       subtotalCents,
       shippingCents,
       taxCents: 0,
-      discountCents: 0,
+      discountCents,
+      couponCode,
+      shippingMethod,
       totalCents,
       currency: "inr",
       shipName: address.fullName,

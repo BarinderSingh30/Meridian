@@ -4,10 +4,11 @@ import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { getCart } from "@/lib/cart";
 import { getAddresses } from "@/lib/addresses";
-import { calculateShippingCents } from "@/lib/shipping";
 import { formatMoney } from "@/lib/money";
+import { calculateDiscountCents, validateCoupon } from "@/lib/coupons";
 import { AddressForm } from "@/components/address-form";
 import { CheckoutButton } from "@/components/checkout-button";
+import { CheckoutOrderSummary } from "@/components/checkout-order-summary";
 
 export const metadata: Metadata = {
   title: "Checkout",
@@ -25,8 +26,12 @@ export default async function CheckoutPage() {
   );
 
   const subtotalCents = cart.items.reduce((sum, item) => sum + item.quantity * item.product.priceCents, 0);
-  const shippingCents = calculateShippingCents(subtotalCents);
-  const totalCents = subtotalCents + shippingCents;
+
+  let discountCents = 0;
+  if (cart.couponCode) {
+    const validation = await validateCoupon(cart.couponCode);
+    if (validation.valid) discountCents = calculateDiscountCents(subtotalCents, validation.coupon);
+  }
 
   const defaultAddress = addresses.find((a) => a.isDefault) ?? addresses[0];
 
@@ -113,28 +118,15 @@ export default async function CheckoutPage() {
         </div>
 
         <aside className="flex flex-col gap-3">
-          <div className="flex flex-col gap-2.5 rounded-[6px] border border-border bg-surface p-4">
-            <h2 className="text-sm font-bold tracking-tight">Order summary</h2>
-            <div className="flex flex-col gap-2 border-t border-border-subtle pt-3 text-xs text-ink-3">
-              <div className="flex justify-between">
-                <span>Subtotal</span>
-                <span className="font-semibold text-ink">{formatMoney(subtotalCents)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Shipping</span>
-                <span className="font-semibold text-teal-dark">{shippingCents === 0 ? "Free" : formatMoney(shippingCents)}</span>
-              </div>
-            </div>
-            <div className="flex items-baseline justify-between border-t border-border-subtle pt-3">
-              <span className="text-sm font-bold">Total</span>
-              <span className="text-[22px] font-extrabold tracking-tight">{formatMoney(totalCents)}</span>
-            </div>
-
-            <CheckoutButton formId="checkout-form" disabled={addresses.length === 0 || stockIssues.length > 0} />
-            {stockIssues.length > 0 && (
-              <p className="text-xs font-medium text-danger">Resolve the stock issues above before placing your order.</p>
-            )}
-          </div>
+          <CheckoutOrderSummary
+            subtotalCents={subtotalCents}
+            discountCents={discountCents}
+            formId="checkout-form"
+            checkoutDisabled={addresses.length === 0 || stockIssues.length > 0}
+          />
+          {stockIssues.length > 0 && (
+            <p className="text-xs font-medium text-danger">Resolve the stock issues above before placing your order.</p>
+          )}
         </aside>
       </div>
     </div>

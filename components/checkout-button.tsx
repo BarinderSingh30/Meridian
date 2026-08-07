@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Script from "next/script";
 import { placeOrderAction } from "@/lib/actions/checkout-actions";
 import { Button } from "@/components/ui/button";
+import type { ShippingMethod } from "@/lib/shipping";
 
 declare global {
   interface Window {
@@ -19,7 +20,9 @@ export function CheckoutButton({ formId, disabled }: { formId: string; disabled:
 
   async function handleClick() {
     const form = document.getElementById(formId) as HTMLFormElement | null;
-    const addressId = form ? String(new FormData(form).get("addressId") ?? "") : "";
+    const formData = form ? new FormData(form) : null;
+    const addressId = formData ? String(formData.get("addressId") ?? "") : "";
+    const shippingMethod = (formData ? String(formData.get("shippingMethod") ?? "standard") : "standard") as ShippingMethod;
     if (!addressId) {
       setError("Choose a shipping address to continue.");
       return;
@@ -28,7 +31,7 @@ export function CheckoutButton({ formId, disabled }: { formId: string; disabled:
     setPending(true);
     setError(null);
 
-    const result = await placeOrderAction(addressId);
+    const result = await placeOrderAction(addressId, shippingMethod);
     if (!result.success) {
       setError(result.error);
       setPending(false);
